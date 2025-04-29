@@ -1,0 +1,20 @@
+{
+  "name": "sentours",
+  "version": "1.0.0",
+  "description": "learning node, express and mongoDB",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git remote add origin https://github.com/sentflix01/sentours.git"
+  },
+  "author": "Sintayehu Mulugeta",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "morgan": "^1.10.0",
+    "nodemon": "^3.1.10"
+  }
+}
