@@ -6,9 +6,9 @@
   "scripts": {
     "start": "nodemon server.js"
   },
-  "repository": {
+  "repository": {git remote add origin https://github.com/sentflix01/sentours.git
     "type": "git",
-    "url": "git remote add origin https://github.com/sentflix01/sentours.git"
+    "url": ""
   },
   "author": "Sintayehu Mulugeta",
   "license": "ISC",
