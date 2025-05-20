@@ -18,16 +18,17 @@ Great question! In **Node.js**, understanding when to use `module.exports` and w
 
 ## 🧠 Rule of Thumb
 
-| If the file... | Use |
-|----------------|-----|
-| Defines something reusable (router, function, class, object) | `module.exports = ...` |
-| Wants to use code from another file | `require('./thatFile')` |
+| If the file...                                               | Use                     |
+| ------------------------------------------------------------ | ----------------------- |
+| Defines something reusable (router, function, class, object) | `module.exports = ...`  |
+| Wants to use code from another file                          | `require('./thatFile')` |
 
 ---
 
 ## 👇 Example: Simple Breakdown
 
-### **math.js** — (this is the *exporter*)
+### **math.js** — (this is the _exporter_)
+
 ```javascript
 function add(a, b) {
   return a + b;
@@ -39,17 +40,18 @@ function multiply(a, b) {
 
 module.exports = {
   add,
-  multiply
+  multiply,
 };
 ```
 
 ---
 
-### **app.js** — (this is the *importer*)
+### **app.js** — (this is the _importer_)
+
 ```javascript
 const math = require('./math');
 
-console.log(math.add(2, 3));      // 5
+console.log(math.add(2, 3)); // 5
 console.log(math.multiply(4, 5)); // 20
 ```
 
@@ -58,6 +60,7 @@ console.log(math.multiply(4, 5)); // 20
 ## 🧱 Example with Routers
 
 **users.js**
+
 ```javascript
 const express = require('express');
 const router = express.Router();
@@ -70,6 +73,7 @@ module.exports = router; // Export this router
 ```
 
 **app.js**
+
 ```javascript
 const express = require('express');
 const app = express();
@@ -89,6 +93,7 @@ app.use('/users', userRoutes);
 
 2. **Wrong file path in `require()`**  
    Always use `./` or `../` for your own files:
+
    - ✅ `require('./users')`
    - ❌ `require('users')` ← this looks for a node module instead of a local file
 
@@ -102,10 +107,10 @@ app.use('/users', userRoutes);
 
 ## ✅ Summary
 
-| File Role       | Keyword            | Example                     |
-|-----------------|--------------------|-----------------------------|
-| Export something | `module.exports`   | `module.exports = router`   |
-| Import something | `require()`        | `const router = require(...)` |
+| File Role        | Keyword          | Example                       |
+| ---------------- | ---------------- | ----------------------------- |
+| Export something | `module.exports` | `module.exports = router`     |
+| Import something | `require()`      | `const router = require(...)` |
 
 ---
 

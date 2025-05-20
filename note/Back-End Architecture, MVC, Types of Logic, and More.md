@@ -8,10 +8,10 @@ Back-End Architecture refers to the **structure and design** of how a server, ap
 
 Key components include:
 
-* **Server**: Processes client requests (e.g., Node.js, Django, ASP.NET).
-* **Application Logic**: Core functionality (business rules, calculations).
-* **Database**: Stores and retrieves data (e.g., PostgreSQL, MongoDB, MySQL).
-* **API Layer**: Communication bridge (often REST or GraphQL).
+- **Server**: Processes client requests (e.g., Node.js, Django, ASP.NET).
+- **Application Logic**: Core functionality (business rules, calculations).
+- **Database**: Stores and retrieves data (e.g., PostgreSQL, MongoDB, MySQL).
+- **API Layer**: Communication bridge (often REST or GraphQL).
 
 ---
 
@@ -19,9 +19,9 @@ Key components include:
 
 MVC is a **design pattern** that separates concerns to make code organized, maintainable, and scalable.
 
-* **Model**: Manages data and business rules (e.g., user info, product data).
-* **View**: User interface that displays data (in back-end, this could be JSON responses or server-rendered HTML).
-* **Controller**: Handles input, processes requests, and updates model/view.
+- **Model**: Manages data and business rules (e.g., user info, product data).
+- **View**: User interface that displays data (in back-end, this could be JSON responses or server-rendered HTML).
+- **Controller**: Handles input, processes requests, and updates model/view.
 
 🧠 Example (Express.js):
 
@@ -39,23 +39,23 @@ exports.getUser = async (req, res) => {
 
 #### a. **Presentation Logic**
 
-* Handles what data to present and how.
-* Example: Formatting a JSON response or rendering a view.
+- Handles what data to present and how.
+- Example: Formatting a JSON response or rendering a view.
 
 #### b. **Business Logic**
 
-* The brain of your application.
-* Example: Validating transactions, applying discount rules, handling user permissions.
+- The brain of your application.
+- Example: Validating transactions, applying discount rules, handling user permissions.
 
 #### c. **Data Access Logic**
 
-* Communicates with the database.
-* Example: SQL queries, ORM operations like `User.find()`.
+- Communicates with the database.
+- Example: SQL queries, ORM operations like `User.find()`.
 
 #### d. **Routing Logic**
 
-* Maps URL paths to specific functions or controllers.
-* Example: `/users/:id` → `getUser()` controller.
+- Maps URL paths to specific functions or controllers.
+- Example: `/users/:id` → `getUser()` controller.
 
 ---
 
@@ -71,23 +71,23 @@ exports.getUser = async (req, res) => {
 
 ### 🧰 **5. Popular Back-End Frameworks**
 
-* **Node.js** with Express (JavaScript)
-* **Django** (Python)
-* **Ruby on Rails** (Ruby)
-* **Spring Boot** (Java)
-* **ASP.NET Core** (C#)
+- **Node.js** with Express (JavaScript)
+- **Django** (Python)
+- **Ruby on Rails** (Ruby)
+- **Spring Boot** (Java)
+- **ASP.NET Core** (C#)
 
 ---
 
 ### 🛡️ **6. Other Key Back-End Concepts**
 
-* **Authentication & Authorization** (JWT, OAuth)
-* **REST & GraphQL APIs**
-* **Middleware** (e.g., for logging, authentication)
-* **Error Handling**
-* **Caching** (e.g., Redis)
-* **Scalability & Load Balancing**
-* **Environment Management** (dev, test, production)
+- **Authentication & Authorization** (JWT, OAuth)
+- **REST & GraphQL APIs**
+- **Middleware** (e.g., for logging, authentication)
+- **Error Handling**
+- **Caching** (e.g., Redis)
+- **Scalability & Load Balancing**
+- **Environment Management** (dev, test, production)
 
 ---
 

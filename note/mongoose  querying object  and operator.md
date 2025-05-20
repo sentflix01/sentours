@@ -1,6 +1,8 @@
 ## 008 CRUD Querying (Reading) Documents
+
 Query operators in mongodb
-1. db.tours.find(). 
+
+1. db.tours.find().
 
 Here’s a list of **MongoDB querying operators**, organized by type for easier reference:
 
@@ -101,7 +103,6 @@ These are used in `.find()` to shape the result.
 
 Would you like a cheat sheet or visual summary of these?
 
-
 In **Mongoose**, a **query object** is the JavaScript object used to define the criteria for finding, updating, or deleting documents in a MongoDB collection. It closely follows MongoDB's native query syntax but can also leverage Mongoose features like chaining.
 
 ---
@@ -111,7 +112,7 @@ In **Mongoose**, a **query object** is the JavaScript object used to define the 
 #### ✅ Find all users named "Alice":
 
 ```js
-User.find({ name: "Alice" });
+User.find({ name: 'Alice' });
 ```
 
 > Query Object: `{ name: "Alice" }`
@@ -131,7 +132,7 @@ User.find({ age: { $gt: 25 } });
 #### ✅ Find user by email (with chaining):
 
 ```js
-User.findOne({ email: "alice@example.com" }).select("name age");
+User.findOne({ email: 'alice@example.com' }).select('name age');
 ```
 
 ---
@@ -153,11 +154,8 @@ User.findOne({ email: "alice@example.com" }).select("name age");
 
 ```js
 User.find({
-  $or: [
-    { age: { $lt: 20 } },
-    { email: { $regex: /@example.com$/ } }
-  ],
-  isActive: true
+  $or: [{ age: { $lt: 20 } }, { email: { $regex: /@example.com$/ } }],
+  isActive: true,
 });
 ```
 
@@ -169,9 +167,9 @@ User.find({
 
 ```js
 User.findOneAndUpdate(
-  { email: "test@example.com" },          // Query object
-  { $set: { lastLogin: Date.now() } },    // Update object
-  { new: true }                           // Options
+  { email: 'test@example.com' }, // Query object
+  { $set: { lastLogin: Date.now() } }, // Update object
+  { new: true }, // Options
 );
 ```
 
@@ -179,9 +177,9 @@ User.findOneAndUpdate(
 
 ### 🧰 Tools:
 
-* `find()`, `findOne()`, `findById()`
-* `findOneAndUpdate()`, `updateOne()`, `deleteOne()`
-* Use `lean()`, `select()`, `populate()` to enhance performance or customize results
+- `find()`, `findOne()`, `findById()`
+- `findOneAndUpdate()`, `updateOne()`, `deleteOne()`
+- Use `lean()`, `select()`, `populate()` to enhance performance or customize results
 
 ---
 

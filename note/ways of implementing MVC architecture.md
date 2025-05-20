@@ -23,10 +23,10 @@ A common and beginner-friendly approach.
 
 #### **Flow:**
 
-* **Routes** define endpoints and call functions from controllers.
-* **Controllers** handle logic and interact with models.
-* **Models** interface with the database.
-* **Views** render data if using server-side rendering (like EJS, Pug).
+- **Routes** define endpoints and call functions from controllers.
+- **Controllers** handle logic and interact with models.
+- **Models** interface with the database.
+- **Views** render data if using server-side rendering (like EJS, Pug).
 
 ---
 
@@ -78,10 +78,10 @@ Inspired by "Clean Architecture" — layers are loosely coupled, often used in l
 
 #### **Layers:**
 
-* **Controller** → handles request
-* **Use Cases (Services)** → business logic
-* **Repositories** → abstract database calls
-* **Entities** → data definitions/models
+- **Controller** → handles request
+- **Use Cases (Services)** → business logic
+- **Repositories** → abstract database calls
+- **Entities** → data definitions/models
 
 This is more advanced, but highly maintainable and testable.
 
@@ -89,11 +89,11 @@ This is more advanced, but highly maintainable and testable.
 
 ### 🔧 Tools/Libraries You Might Use:
 
-* **Express.js** – routing and middleware
-* **Mongoose** – MongoDB ODM (for Models)
-* **Sequelize** – SQL ORM
-* **Joi / Yup** – validation logic
-* **EJS / Pug** – if using server-rendered views
+- **Express.js** – routing and middleware
+- **Mongoose** – MongoDB ODM (for Models)
+- **Sequelize** – SQL ORM
+- **Joi / Yup** – validation logic
+- **EJS / Pug** – if using server-rendered views
 
 ---
 
@@ -238,9 +238,9 @@ module.exports = router;
 
 ### 🧪 Optionally Add:
 
-* `services/userService.js` to handle complex business logic.
-* `middlewares/` for error handling or validation.
-* `validators/` for request validation using Joi or Zod.
+- `services/userService.js` to handle complex business logic.
+- `middlewares/` for error handling or validation.
+- `validators/` for request validation using Joi or Zod.
 
 ---
 
@@ -248,7 +248,7 @@ module.exports = router;
 
 I can either:
 
-* Generate a downloadable zip,
-* Or give you a link to a public starter repo.
+- Generate a downloadable zip,
+- Or give you a link to a public starter repo.
 
 Which would you prefer?

@@ -7,10 +7,12 @@ Let’s go step-by-step.
 
 ---
 
-## 1. **Basic Idea Recap**  
+## 1. **Basic Idea Recap**
+
 In **Express.js**, a "router" is like a **mini app** that handles routes.
 
 You **mount** a router into your main `app` using:
+
 ```javascript
 app.use('/path', router);
 ```
@@ -35,6 +37,7 @@ Suppose you want:
 ---
 
 ### **users.js**
+
 ```javascript
 const express = require('express');
 const router = express.Router();
@@ -60,6 +63,7 @@ module.exports = router;
 ---
 
 ### **products.js**
+
 ```javascript
 const express = require('express');
 const router = express.Router();
@@ -79,6 +83,7 @@ module.exports = router;
 ---
 
 ### **admin.js**
+
 ```javascript
 const express = require('express');
 const router = express.Router();
@@ -137,15 +142,15 @@ app.listen(3000, () => {
 
 ## 3. **How Requests Work Now:**
 
-| URL | Response |
-| :--- | :--- |
-| `http://localhost:3000/users/` | "User Home Page" |
-| `http://localhost:3000/users/profile` | "User Profile" |
-| `http://localhost:3000/products/` | "Product Home Page" |
-| `http://localhost:3000/products/details` | "Product Details" |
-| `http://localhost:3000/admin/` | "Admin Dashboard" |
-| `http://localhost:3000/admin/settings` | "Admin Settings" |
-| `http://localhost:3000/anything-else` | "Page Not Found" |
+| URL                                      | Response            |
+| :--------------------------------------- | :------------------ |
+| `http://localhost:3000/users/`           | "User Home Page"    |
+| `http://localhost:3000/users/profile`    | "User Profile"      |
+| `http://localhost:3000/products/`        | "Product Home Page" |
+| `http://localhost:3000/products/details` | "Product Details"   |
+| `http://localhost:3000/admin/`           | "Admin Dashboard"   |
+| `http://localhost:3000/admin/settings`   | "Admin Settings"    |
+| `http://localhost:3000/anything-else`    | "Page Not Found"    |
 
 ---
 
@@ -187,6 +192,7 @@ module.exports = router;
 ```
 
 Then:
+
 - `GET /products/reviews/` → "All product reviews"
 - `GET /products/reviews/123` → "Review ID: 123"
 

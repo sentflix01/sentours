@@ -6,9 +6,9 @@ Setting up **ESLint + Prettier** in **VS Code** ensures clean, consistent, and e
 
 Ensure you have:
 
-* **Node.js** installed.
-* A **project initialized** (`npm init`).
-* VS Code installed with ESLint and Prettier extensions.
+- **Node.js** installed.
+- A **project initialized** (`npm init`).
+- VS Code installed with ESLint and Prettier extensions.
 
 ---
 
@@ -34,10 +34,10 @@ npx eslint --init
 
 Answer the prompts based on your project setup. For example:
 
-* Type of modules: JavaScript/TypeScript
-* Framework: React/Vue/None
-* Style guide: Airbnb, Standard, etc.
-* Format: JSON/YAML/JavaScript (for `.eslintrc`)
+- Type of modules: JavaScript/TypeScript
+- Framework: React/Vue/None
+- Style guide: Airbnb, Standard, etc.
+- Format: JSON/YAML/JavaScript (for `.eslintrc`)
 
 ---
 
@@ -51,12 +51,12 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended'
+    'plugin:prettier/recommended',
   ],
   plugins: ['@typescript-eslint', 'prettier'],
   rules: {
-    'prettier/prettier': 'error'
-  }
+    'prettier/prettier': 'error',
+  },
 };
 ```
 

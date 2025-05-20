@@ -5,6 +5,7 @@ When working with **apps (especially web apps)** or **Node.js** projects, managi
 ### 🔧 1. What is Configuration?
 
 Configuration refers to **settings or options** your app uses to run properly. These can include:
+
 - Database connection strings
 - API keys
 - Port numbers
@@ -18,6 +19,7 @@ Configuration refers to **settings or options** your app uses to run properly. T
 Environment variables are **key-value pairs** provided to your application at runtime, often used to store sensitive data or environment-specific settings.
 
 Examples:
+
 ```bash
 PORT=3000
 DATABASE_URL=mongodb://localhost:27017/myapp
@@ -29,17 +31,20 @@ NODE_ENV=development
 ### 📦 3. How to Use Environment Variables in Node.js
 
 #### Step 1: Install `dotenv` (optional but common)
+
 ```bash
 npm install dotenv
 ```
 
 #### Step 2: Create a `.env` file
+
 ```env
 PORT=3000
 API_KEY=your_api_key_here
 ```
 
 #### Step 3: Load variables in your app
+
 ```javascript
 require('dotenv').config();
 
@@ -54,16 +59,19 @@ console.log(`Server running on port ${port}, with API key ${apiKey}`);
 ### ⚙️ 4. Environment Types
 
 It's common to distinguish environments:
+
 - `development`: For local development
 - `production`: For deployed/live apps
 - `test`: For automated tests
 
 You can set `NODE_ENV` like:
+
 ```bash
 NODE_ENV=production node app.js
 ```
 
 And in your code:
+
 ```javascript
 if (process.env.NODE_ENV === 'production') {
   // Enable production settings
@@ -86,21 +94,18 @@ if (process.env.NODE_ENV === 'production') {
 
 Would you like a sample project setup or code structure showing how this is done in practice?
 
-
-
-
-
-
 Great! Let's walk through a **detailed example of using configuration and environment variables** in a Node.js app — step by step, with a small sample project.
 
 ---
 
 ## ✅ GOAL:
+
 Create a Node.js app with environment-based configuration using `.env` files and `dotenv`.
 
 ---
 
 ## 🗂️ Project Structure:
+
 ```bash
 my-app/
 │
@@ -119,6 +124,7 @@ my-app/
 ---
 
 ## 📦 Step 1: Initialize Project
+
 ```bash
 mkdir my-app
 cd my-app
@@ -129,6 +135,7 @@ npm install express dotenv
 ---
 
 ## 🔒 Step 2: Add `.gitignore` file
+
 ```bash
 # .gitignore
 node_modules/
@@ -141,6 +148,7 @@ node_modules/
 ## 📝 Step 3: Create Environment Files
 
 ### `.env`
+
 ```env
 NODE_ENV=development
 PORT=3000
@@ -148,12 +156,14 @@ API_KEY=default-key
 ```
 
 ### `.env.development`
+
 ```env
 PORT=3000
 API_KEY=dev-key
 ```
 
 ### `.env.production`
+
 ```env
 PORT=8080
 API_KEY=prod-key
@@ -164,6 +174,7 @@ API_KEY=prod-key
 ## ⚙️ Step 4: Create Configuration Loader
 
 ### `config/index.js`
+
 ```js
 const dotenv = require('dotenv');
 const fs = require('fs');
@@ -192,6 +203,7 @@ module.exports = {
 ## 🚀 Step 5: Main App Code
 
 ### `app.js`
+
 ```js
 const express = require('express');
 const config = require('./config');
@@ -212,11 +224,13 @@ app.listen(config.port, () => {
 ## 🧪 Step 6: Run App
 
 ### For Development
+
 ```bash
 NODE_ENV=development node app.js
 ```
 
 ### For Production
+
 ```bash
 NODE_ENV=production node app.js
 ```
@@ -224,7 +238,9 @@ NODE_ENV=production node app.js
 ---
 
 ## ✅ OUTPUT
+
 Your server will start and display a message like:
+
 ```
 Running in development mode. API Key: dev-key
 ```
@@ -240,6 +256,7 @@ npm install --save-dev cross-env
 ```
 
 Then in `package.json`:
+
 ```json
 "scripts": {
   "start:dev": "cross-env NODE_ENV=development node app.js",
@@ -250,6 +267,7 @@ Then in `package.json`:
 ---
 
 ## 🔐 Security Tip:
+
 Do NOT hard-code sensitive info like API keys in your code. Always use environment variables, especially for secrets.
 
 ---
