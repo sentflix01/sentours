@@ -151,6 +151,7 @@ exports.getTourStats = async (req, res) => {
   }
 };
 
+<<<<<<< HEAD
 exports.getMonthlyPlan = async (req, res) => {
   try {
     const year = req.params.year * 1;
@@ -198,3 +199,5 @@ exports.getMonthlyPlan = async (req, res) => {
     });
   }
 };
+=======
+>>>>>>> 01c610d168b2591341d9c891b2cba3eb79614193

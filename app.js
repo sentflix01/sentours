@@ -1,10 +1,15 @@
 const express = require('express');
 const morgan = require('morgan');
 
+<<<<<<< HEAD
 const AppError = require('./utils/AppError');
 const globalErrorHandler = require('./controllers/ErrorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+=======
+const tourRouter = require('./Routes/tourRoutes');
+const userRouter = require('./Routes/userRoutes');
+>>>>>>> 01c610d168b2591341d9c891b2cba3eb79614193
 
 const app = express();
 // 1st MIDDLEWARE
@@ -16,10 +21,17 @@ if (process.env.NODE_ENV === 'development') {
 app.use(express.json()); /*middleware*/
 app.use(express.static(`${__dirname}/public`));
 
+<<<<<<< HEAD
 // app.use((req, res, next) => {
 //   console.log('Hello from the middleware 👋 ');
 //   next();
 // });
+=======
+app.use((req, res, next) => {
+  console.log('Hello from the middleware 👋 ');
+  next();
+});
+>>>>>>> 01c610d168b2591341d9c891b2cba3eb79614193
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
@@ -35,6 +47,7 @@ app.use((req, res, next) => {
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+<<<<<<< HEAD
 
 app.all('*', (req, res, next) => {
   // const err = new Error(`Can't find ${req.originalUrl} on this server!`);
@@ -45,4 +58,6 @@ app.all('*', (req, res, next) => {
 
 app.use(globalErrorHandler);
 
+=======
+>>>>>>> 01c610d168b2591341d9c891b2cba3eb79614193
 module.exports = app;
