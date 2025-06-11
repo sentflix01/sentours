@@ -15,11 +15,7 @@ Router.route('/top-5-cheap').get(
   tourController.getAllTours,
 );
 Router.route('/tour-stats').get(tourController.getTourStats);
-<<<<<<< HEAD
 Router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
-=======
-
->>>>>>> 01c610d168b2591341d9c891b2cba3eb79614193
 
 Router.route('/')
   .get(tourController.getAllTours)
