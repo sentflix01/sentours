@@ -17,14 +17,7 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
     .limitFields()
     .paginate();
   const tours = await features.query;
-  /* THERE ARE TWO WAYS OF WRITING DATABASE*/
-  /* 1st method*/
-  /* 2nd method*/
-  // const tours = await Tour.find()
-  //   .where('duration')
-  //   .equals(5)
-  //   .where('difficulty')
-  //   .equals('easy');
+
 
   // SEND RESPONSE
   res.status(200).json({
