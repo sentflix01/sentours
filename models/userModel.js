@@ -40,9 +40,14 @@ const userSchema = new mongoose.Schema({
       message: 'Passwords are not the same!',
     },
   },
-  passwordChangeAt: Date,
+  passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 userSchema.pre('save', async function (next) {
@@ -54,12 +59,19 @@ userSchema.pre('save', async function (next) {
 
   // delete passwordConfirm field
   this.passwordConfirm = undefined;
+  next();
+});
 
-  if (this.isNew) {
-    this.passwordChangeAt = Date.now();
-  } else {
-    this.passwordChangeAt = Date.now() - 1000; // Subtract 1s to ensure token is created after password has been changed
-  }
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000; // Subtract 1s to ensure token is created after password has been changed
+  next();
+});
+
+userSchema.pre(/^find/, function (next) {
+  // this points to the current query
+  this.find({ active: { $ne: false } });
   next();
 });
 
@@ -71,9 +83,9 @@ userSchema.methods.correctPassword = async function (
 };
 
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
-  if (this.passwordChangeAt) {
+  if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
-      this.passwordChangeAt.getTime() / 1000,
+      this.passwordChangedAt.getTime() / 1000,
       10,
     );
     console.log(changedTimestamp, JWTTimestamp);
