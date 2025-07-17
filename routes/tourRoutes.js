@@ -1,10 +1,22 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
 const authController = require('../controllers/authController');
+const reviewRouter = require('./reviewRoutes');
 
 const Router = express.Router();
 
 // Router.param('id', tourController.checkedID);
+
+// POST/tour/533jhdjh8/reviews
+// GET/tour/533jhdjh8/reviews
+// GET/tour/533jhdjh8/reviews/789jsakh9
+
+// Router.route('/:tourId/reviews').post(
+//   authController.protect,
+//   authController.restrictTo('user'),
+//   reviewController.createReview,
+// );
+Router.use('/:tourId/reviews', reviewRouter);
 
 // create a check body middleware
 // check if body contains the name price property
