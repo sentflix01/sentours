@@ -75,10 +75,6 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
     message: 'This route is not yet defined',
   });
 };
-/*const change to export*/ exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
-};
+// Do not update password with this!
+/*const change to export*/ exports.updateUser = factory.updateOne(User);
 /*const change to export*/ exports.deleteUser = factory.deleteOne(User);
