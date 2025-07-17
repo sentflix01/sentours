@@ -2,6 +2,8 @@ const { default: mongoose } = require('mongoose');
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
+const factory = require('./handlerFactory');
+const { deleteOne } = require('../models/tourModel');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -79,9 +81,4 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
     message: 'This route is not yet defined',
   });
 };
-/*const change to export*/ exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
-};
+/*const change to export*/ exports.deleteUser = factory.deleteOne(User);

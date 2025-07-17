@@ -115,18 +115,19 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.restrictTo =
-  (...roles) =>
-  (req, res, next) => {
+// eslint-disable-next-line arrow-body-style
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    console.log('User role:', req.user.role); // <-- Add this line
     // roles ['admin', 'lead-guide'].  role = 'user'
     if (!roles.includes(req.user.role)) {
       return next(
         new AppError('You do not have permission to perform this action', 403),
-      );
+      ); 
     }
     next();
   };
-
+};
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   // 1) Get user based on Posted email
   const user = await User.findOne({ email: req.body.email });
