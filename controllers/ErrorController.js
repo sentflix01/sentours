@@ -9,7 +9,6 @@ const handleDuplicateFieldsDB = (err) => {
     /(["'])(?:(?=(\\?))\2.)*?\1/,
   )[0];
   // const value = err.keyValue ? JSON.stringify(err.keyValue) : 'duplicate value';
-  console.log(value);
   const message = `Duplicate field value: ${value}. Please use another value!`;
   return new AppError(message, 400);
 };
@@ -40,7 +39,7 @@ const sendErrorProd = (err, res) => {
       status: err.status,
       message: err.message,
     });
-    // programing or other unknown error: don't leak error details
+    // programming or other unknown error: don't leak error details
   } else {
     // 1) log error
     console.error('ERROR 💥', err);

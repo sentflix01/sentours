@@ -42,9 +42,31 @@ reviewSchema.pre(/^find/, function (next) {
   // });
   this.populate({
     path: 'user',
-    select: 'name',
+    select: 'name photo',
   });
 
+  next();
+});
+
+reviewSchema.statics.calcAverageRatings = async function (tourId) {
+  console.log(tourId);
+  const stats = await this.aggregate([
+    {
+      $match: { tour: tourId },
+    },
+    {
+      $group: {
+        _id: '$tour',
+        nRatings: { $sum: 1 },
+        avgRating: { $avg: '$rating' },
+      },
+    },
+  ]);
+  console.log(stats);
+};
+reviewSchema.pre('save', function (next) {
+  // this points to current review
+  this.constructor.calcAverageRatings(this.tour);
   next();
 });
 

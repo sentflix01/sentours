@@ -88,8 +88,7 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
       this.passwordChangedAt.getTime() / 1000,
       10,
     );
-    console.log(changedTimestamp, JWTTimestamp);
-    return JWTTimestamp < changedTimestamp; // 100days the token is generated and < after 200days the password changed time so 100 < 200 means the password is changed and the result is true and otherwise the result is false which means not changed.
+    return JWTTimestamp < changedTimestamp;
   }
   // false means NOT changed
   return false;
@@ -109,6 +108,6 @@ userSchema.methods.correctResetToken = function () {
   return resetToken;
 };
 
-const   User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

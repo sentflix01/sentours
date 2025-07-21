@@ -14,8 +14,14 @@ const filterObj = (obj, ...allowedFields) => {
 };
 
 exports.getMe = (req, res, next) => {
-  req.params.id = req.user.id;
-  next();
+  // req.params.id = req.user.id;
+  // next();
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user: req.user,
+    },
+  });
 };
 
 exports.updateMe = catchAsync(async (req, res, next) => {
@@ -63,8 +69,8 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 };
 
+/*const change to export*/ exports.getUser = factory.getOne(User);
 /*const change to export*/ exports.getAllUsers = factory.getAll(User);
 // Do not update password with this!
-/*const change to export*/ exports.getUser = factory.getOne(User);
 /*const change to export*/ exports.updateUser = factory.updateOne(User);
 /*const change to export*/ exports.deleteUser = factory.deleteOne(User);
