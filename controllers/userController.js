@@ -1,9 +1,9 @@
-const { default: mongoose } = require('mongoose');
+// const { default: mongoose } = require('mongoose');
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
 const factory = require('./handlerFactory');
-const { deleteOne } = require('../models/tourModel');
+// const { deleteOne } = require('../models/tourModel');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -12,20 +12,12 @@ const filterObj = (obj, ...allowedFields) => {
   });
   return newObj;
 };
-/*const change to export*/ exports.getAllUsers = catchAsync(
-  async (req, res, next) => {
-    const users = await User.find();
 
-    // SEND RESPONSE
-    res.status(200).json({
-      status: 'success',
-      results: users.length,
-      data: {
-        users,
-      },
-    });
-  },
-);
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create error if users POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
@@ -63,18 +55,15 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
-/*const change to export*/ exports.getUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
-};
+
 /*const change to export*/ exports.createUser = (req, res) => {
   res.status(500).json({
     status: 'error',
-    message: 'This route is not yet defined',
+    message: 'This route is not defined  Please use /signup instead',
   });
 };
+/*const change to export*/ exports.getUser = factory.getOne(User);
+/*const change to export*/ exports.getAllUsers = factory.getAll(User);
 // Do not update password with this!
 /*const change to export*/ exports.updateUser = factory.updateOne(User);
 /*const change to export*/ exports.deleteUser = factory.deleteOne(User);

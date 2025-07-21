@@ -28,7 +28,7 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 // Body parser, reading data from the body into req.body
-app.use(express.json()); /*middleware*/
+app.use(express.json({ limit: '10kb' })); /*middleware*/
 
 // Data sanitization against NOSQL query injection
 app.use(mongoSanitize());
