@@ -2,29 +2,27 @@ const fs = require('fs');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const Tour = require('../../models/tourModel');
-const Review = require('../../models/reviewModel');
 const User = require('../../models/userModel');
-// const express = require('express');
-// const Router = express.Router();
+const Review = require('../../models/reviewModel');
 
 dotenv.config({ path: './config.env' });
-// const DB = process.env.DATABASE.replace(
-//   '<PASSWORD>',
-//   process.env.DATABASE_PASSWORD,
-// );
 const DB =
   process.env.NODE_ENV === 'development'
     ? process.env.DATABASE_LOCAL
     : process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
 
+// Connect to MongoDB
 mongoose
-  .connect(DB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-  })
-  .then(() => console.log('DB connection successful!'));
-mongoose.connect(DB).then(() => console.log('DB connection successful!'));
+  .connect(DB)
+  .then(() => console.log('DB connection successful!'))
+  .catch((err) => console.log('DB connection error:', err));
+
+// mongoose.connect(DB, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
+// // .then(() => console.log('DB connection successful!'));
+// mongoose.connect(DB).then(() => console.log('DB connection successful!'));
 
 // READ JSON FILE
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
@@ -40,10 +38,10 @@ const importData = async () => {
     await User.create(users, { validateBeforeSave: false });
     await Review.create(reviews);
     console.log('Data successfully loaded!');
+    process.exit();
   } catch (err) {
     console.log(err);
   }
-  process.exit();
 };
 
 // DELETE ALL DATA FROM COLLECTION
@@ -53,10 +51,10 @@ const deleteData = async () => {
     await User.deleteMany();
     await Review.deleteMany();
     console.log('Data successfully deleted!');
+    process.exit();
   } catch (err) {
     console.log(err);
   }
-  process.exit();
 };
 
 if (process.argv[2] === '--import') {
