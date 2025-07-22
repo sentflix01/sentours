@@ -1,5 +1,9 @@
 const Tour = require('../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
+<<<<<<< HEAD
+=======
+// const AppError = require('../utils/AppError');
+>>>>>>> factory-pr-8760863
 const factory = require('./handlerFactory');
 // const AppError = require('../utils/AppError');
 

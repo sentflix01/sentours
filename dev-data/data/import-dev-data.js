@@ -13,12 +13,16 @@ const DB =
 
 // Connect to MongoDB
 mongoose
-  .connect(DB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log('DB connection successful!'));
-mongoose.connect(DB).then(() => console.log('DB connection successful!'));
+  .connect(DB)
+  .then(() => console.log('DB connection successful!'))
+  .catch((err) => console.log('DB connection error:', err));
+
+// mongoose.connect(DB, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
+// // .then(() => console.log('DB connection successful!'));
+// mongoose.connect(DB).then(() => console.log('DB connection successful!'));
 
 // READ JSON FILE
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
