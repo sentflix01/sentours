@@ -87,16 +87,18 @@ exports.protect = catchAsync(async (req, res, next) => {
       );
     }
     // 2) Verification token
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    // let decoded;
-    // try {
-    //   decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    // } catch (err) {
-    //   // Pass JWT errors to the global error handler
-    //   return next(err);
-    // }
+    // const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    let decoded;
+    try {
+      decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    } catch (err) {
+      // Pass JWT errors to the global error handler
+      return next(err);
+    }
     // 3) check if user still exists
+    console.log('Decoded user ID:', decoded.id);
     const currentUser = await User.findById(decoded.id);
+    console.log('User found by ID:', currentUser);
     if (!currentUser) {
       return next(
         new AppError(

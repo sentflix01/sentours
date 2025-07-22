@@ -28,7 +28,11 @@ mongoose
     useUnifiedTopology: true,
   }*/,
   )
-  .then(() => console.log('DB connection successful!'));
+  .then(() => {
+    console.log('DB connection successful!');
+    console.log('Connected to DB:', DB);
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+  });
 
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
