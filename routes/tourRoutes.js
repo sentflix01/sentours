@@ -12,11 +12,7 @@ Router.route('/top-5-cheap').get(
 Router.route('/tour-stats').get(tourController.getTourStats);
 Router.route('/monthly-plan/:year').get(
   authController.protect,
-<<<<<<< HEAD
-  authController.restrictTo('admin', 'lead-guide', 'guide'),
-=======
   authController.restrictTo('admin', 'lead-guide', 'guide '),
->>>>>>> factory-pr-8760863
   tourController.getMonthlyPlan,
 );
 
@@ -24,11 +20,7 @@ Router.route('/')
   .get(tourController.getAllTours)
   .post(
     authController.protect,
-<<<<<<< HEAD
-    authController.restrictTo('admin', 'lead guide'),
-=======
     authController.restrictTo('admin', 'lead-guide'),
->>>>>>> factory-pr-8760863
     tourController.createTour,
   );
 Router.route('/:id')

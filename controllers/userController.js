@@ -14,19 +14,8 @@ const filterObj = (obj, ...allowedFields) => {
 };
 
 exports.getMe = (req, res, next) => {
-<<<<<<< HEAD
-  // req.params.id = req.user.id;
-  // next();
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user: req.user,
-    },
-  });
-=======
   req.params.id = req.user.id;
   next();
->>>>>>> factory-pr-8760863
 };
 
 exports.updateMe = catchAsync(async (req, res, next) => {
@@ -70,16 +59,9 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 /*const change to export*/ exports.createUser = (req, res) => {
   res.status(500).json({
     status: 'error',
-<<<<<<< HEAD
-    message: 'This route is not defined Please use /signup instead',
-  });
-};
-
-=======
     message: 'This route is not defined  Please use /signup instead',
   });
 };
->>>>>>> factory-pr-8760863
 /*const change to export*/ exports.getUser = factory.getOne(User);
 /*const change to export*/ exports.getAllUsers = factory.getAll(User);
 // Do not update password with this!

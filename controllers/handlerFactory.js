@@ -1,9 +1,6 @@
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
-<<<<<<< HEAD
-=======
 // const { Model } = require('mongoose');
->>>>>>> factory-pr-8760863
 const APIFeatures = require('../utils/APIFeatures');
 
 exports.deleteOne = (Model) =>
@@ -45,22 +42,12 @@ exports.createOne = (Model) =>
       },
     });
   });
-<<<<<<< HEAD
-exports.getOne = (Model, popOptions) =>
-  catchAsync(async (req, res, next) => {
-    const query = Model.findById(req.params.id);
-    if (popOptions) query.populate(popOptions);
-
-    const doc = await query;
-
-=======
 
 exports.getOne = (Model, popOptions) =>
   catchAsync(async (req, res, next) => {
     let query = Model.findById(req.params.id);
     if (popOptions) query = query.populate(popOptions);
     const doc = await query;
->>>>>>> factory-pr-8760863
     if (!doc) {
       return next(new AppError('No document found with that ID', 404));
     }
@@ -71,16 +58,9 @@ exports.getOne = (Model, popOptions) =>
       },
     });
   });
-<<<<<<< HEAD
-
-exports.getAll = (Model) =>
-  catchAsync(async (req, res, next) => {
-    // To allow for nested get reviews on tour
-=======
 exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
     // to allow for nested GET reviews on to
->>>>>>> factory-pr-8760863
     let filter = {};
     if (req.params.tourId) filter = { tour: req.params.tourId };
     const features = new APIFeatures(Model.find(filter), req.query)
@@ -89,10 +69,6 @@ exports.getAll = (Model) =>
       .limitFields()
       .paginate();
     const doc = await features.query;
-<<<<<<< HEAD
-    // const doc = await features.query.explain();
-=======
->>>>>>> factory-pr-8760863
 
     // SEND RESPONSE
     res.status(200).json({
