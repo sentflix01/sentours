@@ -25,7 +25,7 @@ mongoose
   .connect(
     DB /*, {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useUnifiedTopology: true,
   }*/,
   )
   .then(() => {
