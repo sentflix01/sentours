@@ -33,6 +33,8 @@ const reviewSchema = new mongoose.Schema(
   },
 );
 
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 reviewSchema.pre(/^find/, function (next) {
   // this.populate({
   //   path: 'tour',
@@ -83,16 +85,21 @@ reviewSchema.post('save', function () {
 
 // Store the document before update/delete in pre middleware
 reviewSchema.pre(/^findOneAnd/, async function (next) {
-  this.r = await this.findOne().clone(); // Use .clone() to avoid the error
-  // console.log(this.r);
+  // this.r = await this.findOne().clone(); // Use .clone() to avoid the error
+  // Use the filter from the query to fetch the document directly
+  this.r = await this.model.findOne(this.getQuery());
+  console.log(this.r);
   next();
 });
 
 // Use post middleware to access the result and perform actions
 reviewSchema.post(/^findOneAnd/, async function () {
   // await this.findOne(); does Not work here, query has already executed
-
-  await this.r.constructor.calcAverageRatings(this.r.tour);
+  // await this.r.constructor.calcAverageRatings(this.r.tour);
+  // Only run if a document was found
+  if (this.r) {
+    await this.r.constructor.calcAverageRatings(this.r.tour);
+  }
 });
 const Review = mongoose.model('Review', reviewSchema);
 
