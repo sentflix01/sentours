@@ -19,7 +19,7 @@ exports.deleteTour = factory.deleteOne(Tour);
 exports.getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
     {
-      $match: { ratingsAverage: { $gte: 4 } },
+      $match: { ratingsAverage: { $gte: 4.5 } },
     },
     {
       $group: {
@@ -30,21 +30,6 @@ exports.getTourStats = catchAsync(async (req, res, next) => {
         avgPrice: { $avg: '$price' },
         minPrice: { $min: '$price' },
         maxPrice: { $max: '$price' },
-      },
-    },
-    {
-      $project: {
-        numTours: 1,
-        numRatings: 1,
-        avgRating: {
-          $round: [
-            '$avgRating',
-            2 /* to increase the decimal length add the no of digit by N  ['$avgRating', (N++)] if N = 3 avgRating is 4.533, if N=2 avgRating 4.53 if n=0 avgRating 5 it's increased */,
-          ],
-        }, // <-- this line
-        avgPrice: 1,
-        minPrice: 1,
-        maxPrice: 1,
       },
     },
     {

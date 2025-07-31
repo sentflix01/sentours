@@ -116,7 +116,7 @@ const tourSchema = new mongoose.Schema(
   },
 );
 // tourSchema.index({ price: 1 });
-tourSchema.index({ price: 1, ratingAverage: -1 });
+tourSchema.index({ price: 1, ratingsAverage: -1 }); // Fix: ratingAverage → ratingsAverage
 tourSchema.index({ slug: 1 });
 tourSchema.index({ startLocation: '2dsphere' });
 
@@ -172,7 +172,7 @@ tourSchema.pre(/^find/, function (next) {
 
 tourSchema.post(/^find/, function (docs, next) {
   console.log(`Query took ${Date.now() - this.start} milliseconds!`);
-  console.log(docs);
+  // console.log(docs); // This logs the entire tour object!
   next();
 });
 
