@@ -15,13 +15,43 @@ const reviewRouter = require('./routes/reviewRoutes');
 const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
+app.use(helmet());
+
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      baseUri: ["'self'"],
+      fontSrc: ["'self'", 'https:', 'data:'],
+      imgSrc: [
+        "'self'",
+        'data:',
+        'https://*.tile.openstreetmap.org',
+        'https://*.tile.thunderforest.com',
+      ],
+      objectSrc: ["'none'"],
+      scriptSrc: [
+        "'self'",
+        'https://unpkg.com', // Leaflet CDN
+        "'unsafe-inline'", // Allow inline scripts (if absolutely needed)
+      ],
+      styleSrc: [
+        "'self'",
+        'https:',
+        "'unsafe-inline'", // Needed by Leaflet for internal styles
+        'https://unpkg.com', // Leaflet CDN
+      ],
+      workerSrc: ["'self'", 'blob:'],
+      connectSrc: ["'self'"],
+    },
+  }),
+);
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // 1st GLOBAL MIDDLEWARE
 // Set security HTTP headers
-app.use(helmet());
 // Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
