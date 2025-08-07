@@ -77,52 +77,73 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+  }
+  if (!token) {
+    return next(
+      new AppError('You are not logged in! Please log in to get access.', 401),
+    );
+  }
+  // 2) Verification token
+  // const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  let decoded;
+  try {
+    decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  } catch (err) {
+    // Pass JWT errors to the global error handler
+    return next(err);
+  }
+  // 3) check if user still exists
+  // console.log('Decoded user ID:', decoded.id);
+  const currentUser = await User.findById(decoded.id);
+  // console.log('User found by ID:', currentUser);
+  if (!currentUser) {
+    return next(
+      new AppError(
+        'The user belonging to this user does no longer exist.',
+        401,
+      ),
+    );
+  }
+  // 4) check if user changed password after the token was issued
+  if (currentUser.changedPasswordAfter(decoded.iat)) {
+    return next(
+      new AppError('User recently changed password! Please log in again.', 401),
+    );
+  } /*iat stands for issues at*/
 
-    if (!token) {
-      return next(
-        new AppError(
-          'You are not logged in! Please log in to get access.',
-          401,
-        ),
-      );
-    }
-    // 2) Verification token
-    // const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    let decoded;
-    try {
-      decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    } catch (err) {
-      // Pass JWT errors to the global error handler
-      return next(err);
-    }
-    // 3) check if user still exists
+  // GRANT ACCESS TO PROTECTED ROUTE
+  req.user = currentUser;
+  next();
+});
+
+// only render pager not error
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  // 1) varify the token
+  if (req.cookies.jwt) {
+    const decoded = await promisify(jwt.verify)(
+      req.cookies.jwt,
+      process.env.JWT_SECRET,
+    );
+    // 2) check if user still exists
     // console.log('Decoded user ID:', decoded.id);
     const currentUser = await User.findById(decoded.id);
     // console.log('User found by ID:', currentUser);
     if (!currentUser) {
-      return next(
-        new AppError(
-          'The user belonging to this user does no longer exist.',
-          401,
-        ),
-      );
+      return next();
     }
-    // 4) check if user changed password after the token was issued
+    // 3) check if user changed password after the token was issued
     if (currentUser.changedPasswordAfter(decoded.iat)) {
-      return next(
-        new AppError(
-          'User recently changed password! Please log in again.',
-          401,
-        ),
-      );
+      return next();
     } /*iat stands for issues at*/
 
-    // GRANT ACCESS TO PROTECTED ROUTE
-    req.user = currentUser;
-    next();
+    // THERE IS A LOGGED IN USER
+    res.locals.user = currentUser;
+    return next();
   }
+  next();
 });
-
 // eslint-disable-next-line arrow-body-style
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
