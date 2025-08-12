@@ -69,6 +69,14 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+exports.logout = (req, res) => {
+  res.cookie('jwt', 'loggedOut', {
+    expires: new Date(Date.now() + 10 * 1000),
+  });
+  res.status(200).json({
+    status: 'success',
+  });
+};
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check if it's there
   let token;
@@ -115,35 +123,40 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // GRANT ACCESS TO PROTECTED ROUTE
   req.user = currentUser;
+  res.locals.user = currentUser;
   next();
 });
 
 // only render pager not error
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
-  // 1) varify the token
+exports.isLoggedIn = async (req, res, next) => {
   if (req.cookies.jwt) {
-    const decoded = await promisify(jwt.verify)(
-      req.cookies.jwt,
-      process.env.JWT_SECRET,
-    );
-    // 2) check if user still exists
-    // console.log('Decoded user ID:', decoded.id);
-    const currentUser = await User.findById(decoded.id);
-    // console.log('User found by ID:', currentUser);
-    if (!currentUser) {
+    try {
+      // 1) varify the token
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET,
+      );
+      // 2) check if user still exists
+      // console.log('Decoded user ID:', decoded.id);
+      const currentUser = await User.findById(decoded.id);
+      // console.log('User found by ID:', currentUser);
+      if (!currentUser) {
+        return next();
+      }
+      // 3) check if user changed password after the token was issued
+      if (currentUser.changedPasswordAfter(decoded.iat)) {
+        return next();
+      } /*iat stands for issues at*/
+
+      // THERE IS A LOGGED IN USER
+      res.locals.user = currentUser;
+      return next();
+    } catch (err) {
       return next();
     }
-    // 3) check if user changed password after the token was issued
-    if (currentUser.changedPasswordAfter(decoded.iat)) {
-      return next();
-    } /*iat stands for issues at*/
-
-    // THERE IS A LOGGED IN USER
-    res.locals.user = currentUser;
-    return next();
   }
   next();
-});
+};
 // eslint-disable-next-line arrow-body-style
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {

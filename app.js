@@ -44,7 +44,14 @@ app.use(
         'https://unpkg.com', // Leaflet CDN
       ],
       workerSrc: ["'self'", 'blob:'],
-      connectSrc: ["'self'"],
+      connectSrc: [
+        "'self'",
+        'ws://127.0.0.1:*', // Allow all WS ports in localhost
+      ],
+      // connectSrc:
+      //   process.env.NODE_ENV === 'development'
+      //     ? ["'self'", 'ws://127.0.0.1:*']
+      //     : ["'self'"], // Only allow WebSocket in dev,
     },
   }),
 );
@@ -67,6 +74,7 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 // Body parser, reading data from the body into req.body
 app.use(express.json({ limit: '10kb' })); /*middleware*/
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser());
 
 // Data sanitization against NOSQL query injection
