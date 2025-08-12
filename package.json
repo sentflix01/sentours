@@ -10,8 +10,8 @@
     "start": "nodemon server.js",
     "start:prod": "cross-env NODE_ENV=production nodemon server.js",
     "debug": "ndb server.js",
-    "watch:js": "parcel watch public/js/index.js --out-dir public/js --out-file bundle.js",
-    "build:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
+    "watch:js": "parcel watch public/js/index.js",
+    "build:js": "parcel build public/js/index.js --no-content-hash"
   },
   "repository": {
     "type": "git",
@@ -43,6 +43,7 @@
     "mongodb": "^6.16.0",
     "mongoose": "^8.14.1",
     "morgan": "^1.10.0",
+    "multer": "^2.0.2",
     "nodemailer": "^7.0.4",
     "nodemon": "^3.1.10",
     "pug": "^3.0.3",
@@ -64,5 +65,13 @@
     "eslint-plugin-react": "^7.37.5",
     "parcel-bundler": "^1.12.5",
     "prettier": "^3.5.3"
+  },
+  "targets": {
+    "default": {
+      "distDir": "./public/js",
+      "fileName": "bundle.js",
+      "sourceMap": true,
+      "publicUrl": "/js/"
+    }
   }
 }

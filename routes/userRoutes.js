@@ -1,6 +1,10 @@
 const express = require('express');
+// eslint-disable-next-line import/no-extraneous-dependencies, node/no-extraneous-require
+const multer = require('multer');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
+
+const upload = multer({ dest: 'public/img/users' });
 
 const Router = express.Router();
 Router.post('/signup', authController.signup);
@@ -14,7 +18,7 @@ Router.use(authController.protect);
 
 Router.patch('/updateMyPassword', authController.updatePassword);
 Router.get('/me', userController.getMe, userController.getUser);
-Router.patch('/updateMe', userController.updateMe);
+Router.patch('/updateMe', upload.single('photo'), userController.updateMe);
 Router.delete('/deleteMe', userController.deleteMe);
 
 Router.use(authController.restrictTo('admin'));
