@@ -7,7 +7,7 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   // 1) Get tour data from collection
   const tours = await Tour.find();
   // 2) build templates
-
+console.log(JSON.stringify(tours, null, 2));
   // 3) Render that template using the data from 1)
 
   res.status(200).render('overview', {
