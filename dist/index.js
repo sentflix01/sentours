@@ -12725,12 +12725,13 @@ var logout = exports.logout = /*#__PURE__*/function () {
           });
         case 1:
           res = _context2.v;
-          if (res.data.status === 'success') location.reload(true);
+          if (res.data.status = 'success') location.reload(true);
           _context2.n = 3;
           break;
         case 2:
           _context2.p = 2;
           _t2 = _context2.v;
+          console.log(_t2.response);
           (0, _alerts.showAlert)('error', 'Error logging out! Try again.');
         case 3:
           return _context2.a(2);
@@ -12933,7 +12934,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
 //DOM ELEMENT
 var leaflet = document.getElementById('map');
 var loginForm = document.querySelector('.form--login');
-var logOutBtn = document.querySelector('.na__el--logout');
+var logOutBtn = document.querySelector('.nav__el--logout');
 var userDataForm = document.querySelector('.form-user-data');
 var userPasswordForm = document.querySelector('.form.form-user-password');
 // DELEGATION
@@ -13014,7 +13015,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52190" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52306" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

@@ -1,12 +1,10 @@
-const express = require('express');
 // eslint-disable-next-line import/no-extraneous-dependencies, node/no-extraneous-require
-
+const express = require('express');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
 
-
-
 const Router = express.Router();
+
 Router.post('/signup', authController.signup);
 Router.post('/login', authController.login);
 Router.get('/logout', authController.logout);
@@ -18,7 +16,11 @@ Router.use(authController.protect);
 
 Router.patch('/updateMyPassword', authController.updatePassword);
 Router.get('/me', userController.getMe, userController.getUser);
-Router.patch('/updateMe', userController.uploadUserPhoto , userController.updateMe);
+Router.patch(
+  '/updateMe',
+  userController.uploadUserPhoto,
+  userController.updateMe,
+);
 Router.delete('/deleteMe', userController.deleteMe);
 
 Router.use(authController.restrictTo('admin'));

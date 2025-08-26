@@ -99,6 +99,20 @@ app.use(
 // app.use(express.static(`${__dirname}/public`)); changed
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Serve/redirect source maps and silence missing vendor maps to avoid noisy 404s
+app.get('/bundle.js.map', (req, res) => {
+  res.redirect(301, '/js/bundle.js.map');
+});
+
+app.get('/vendor/leaflet/leaflet.js.map', (req, res) => {
+  // Leaflet may not ship source maps; return empty 204 to silence 404s
+  res.status(204).end();
+});
+
+app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
+  res.status(204).end();
+});
+
 // app.use((req, res, next) => {
 //   console.log('Hello from the middleware 👋 ');
 //   next();

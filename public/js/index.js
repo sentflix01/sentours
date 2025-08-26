@@ -7,7 +7,7 @@ import { updateSettings } from './updateSettings';
 //DOM ELEMENT
 const leaflet = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
-const logOutBtn = document.querySelector('.na__el--logout');
+const logOutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form.form-user-password');
 // DELEGATION
@@ -38,7 +38,7 @@ if (userDataForm)
 if (userPasswordForm)
   userPasswordForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    document.querySelector('.btn--save-password').textContent = 'updating...'
+    document.querySelector('.btn--save-password').textContent = 'updating...';
     const currentPassword = document.getElementById('password-current').value;
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('password-confirm').value;
@@ -47,7 +47,7 @@ if (userPasswordForm)
       'password',
     );
 
-    document.querySelector('.btn--save-password').textContent = 'Save password'
+    document.querySelector('.btn--save-password').textContent = 'Save password';
     document.getElementById('password-current').value = '';
     document.getElementById('password').value = '';
     document.getElementById('password-confirm').value = '';

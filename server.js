@@ -14,18 +14,18 @@ const app = require('./app');
 //   process.env.DATABASE_PASSWORD,
 // );
 // const DB = 'mongodb://127.0.0.1:27017/natours';
-// const DB = process.env.DATABASE.replace(
-//   '<PASSWORD>',
-//   process.env.DATABASE_PASSWORD,
-// );
+const DB = process.env.DATABASE.replace(
+  '<PASSWORD>',
+  process.env.DATABASE_PASSWORD,
+);
 
 // process.env.NODE_ENV === 'development'
 //   ? process.env.DATABASE_LOCAL
 //   : process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
-const DB =
-  process.env.NODE_ENV === 'development'
-    ? process.env.DATABASE_LOCAL
-    : process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
+// const DB =
+//   process.env.NODE_ENV === 'development'
+//     ? process.env.DATABASE_LOCAL
+//     : process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
 
 // Connect to MongoDB
 // mongoose
@@ -48,8 +48,8 @@ const DB =
 
 mongoose.connect(DB).then(() => {
   console.log('DB connection successful!');
-  console.log('Connected to DB:', DB);
-  console.log('NODE_ENV:', process.env.NODE_ENV);
+  // console.log('Connected to DB:', DB);
+  // console.log('NODE_ENV:', process.env.NODE_ENV);
 });
 
 const port = process.env.PORT || 3000;

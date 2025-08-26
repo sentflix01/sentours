@@ -1,4 +1,4 @@
-const multer = require('multer'); 
+const multer = require('multer');
 // const { default: mongoose } = require('mongoose');
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
@@ -6,31 +6,30 @@ const AppError = require('../utils/AppError');
 const factory = require('./handlerFactory');
 // const { deleteOne } = require('../models/tourModel');
 
-
 const multerStorage = multer.diskStorage({
-  destination: (req,file,cb) => {
-    cb(null,'public/img/users')
+  destination: (req, file, cb) => {
+    cb(null, 'public/img/users');
   },
-  filename: (req,file,cb) => {
+  filename: (req, file, cb) => {
     const ext = file.mimetype.split('/')[1];
-    cb(null,`user-${req.user.id}-${Date.now()}.${ext}`);
-  }
-})
+    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+  },
+});
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
-    cb(null,true)
+    cb(null, true);
   } else {
-    cb(new AppError('Not an image! Please upload only images.', 400), false)
+    cb(new AppError('Not an image! Please upload only images.', 400), false);
   }
-}
+};
 
-const upload = multer({ 
+const upload = multer({
   storage: multerStorage,
-  fileFilter: multerFilter
+  fileFilter: multerFilter,
 });
 
-exports.uploadUserPhoto = upload.single('photo')
+exports.uploadUserPhoto = upload.single('photo');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -46,6 +45,8 @@ exports.getMe = (req, res, next) => {
 };
 
 exports.updateMe = catchAsync(async (req, res, next) => {
+  console.log(req.file);
+  console.log(req.body);
 
   // 1) Create error if users POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
@@ -59,7 +60,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
   //2) Filtered out unwanted fields names that are not allowed to be updated
   const filteredBody = filterObj(req.body, 'name', 'email');
-  if(req.file) filteredBody.photo = req.file.filename;
+  if (req.file) filteredBody.photo = req.file.filename;
   //3) update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,

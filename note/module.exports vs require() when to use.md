@@ -1,6 +1,7 @@
 Great question! In **Node.js**, understanding when to use `module.exports` and when to use `require()` is key to organizing and connecting your code.
 
----
+---`node ./dev-data/data/import-dev-data.js --import`
+---`node ./dev-data/data/import-dev-data.js --delete`
 
 # ✅ Core Concept
 
