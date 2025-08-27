@@ -12936,7 +12936,7 @@ var leaflet = document.getElementById('map');
 var loginForm = document.querySelector('.form--login');
 var logOutBtn = document.querySelector('.nav__el--logout');
 var userDataForm = document.querySelector('.form-user-data');
-var userPasswordForm = document.querySelector('.form.form-user-password');
+var userPasswordForm = document.querySelector('.form-user-password');
 // DELEGATION
 if (leaflet) {
   var locations = JSON.parse(leaflet.dataset.locations);
