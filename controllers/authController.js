@@ -46,7 +46,11 @@ exports.signup = catchAsync(async (req, res, next) => {
   });
   const url = `${req.protocol}://${req.get('host')}/me`;
   console.log(url);
-  await new Email(newUser, url).sendWelcome();
+  try {
+    await new Email(newUser, url).sendWelcome();
+  } catch (err) {
+    console.log(err);
+  }
   createSendToken(newUser, 201, res);
 
   // ***jonas lecture******const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
