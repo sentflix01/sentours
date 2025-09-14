@@ -3,9 +3,9 @@ include _reviewCard
 
 block append head
   link(rel='stylesheet', href='/vendor/leaflet/leaflet.css')
-  style.
   script(src='/vendor/leaflet/leaflet.js')
-  //- script(src='/js/mapbox.js')
+  script(src='https://js.stripe.com/v3/')
+
   
 
 mixin overviewBox(label, text, icon)
@@ -54,7 +54,7 @@ block content
           each guide in tour.guides
             .overview-box__detail
               img.overview-box__img(
-                src=`/img/users/${guide.photo}`,
+                src=`/img/users/${guide.photo || 'default.jpg'}`,
                 alt=`${guide.name}`
               )
 
@@ -66,7 +66,7 @@ block content
 
     .description-box
       h2.heading-secondary.ma-bt-lg= `About ${tour.name} tour`
-      - const paragraphs = tour.description.split('/n');
+      - const paragraphs = tour.description.split('\n');
       each p in paragraphs
         p.description__text= p
 
@@ -96,4 +96,8 @@ block content
       .cta__content
         h2.heading-secondary What are you waiting for?
         p.cta__text= `${tour.duration} days. 1 adventure. Infinite memories. Make it yours today!`
-        button.btn.btn--green.span-all-rows Book tour now!
+
+        if user
+          button.btn.btn--green.span-all-rows#book-tour(data-tour-id=`${tour.id}`) Book tour now!
+        else
+          a.btn.btn--green.span-all-rows(href='/login') Log in to book tour

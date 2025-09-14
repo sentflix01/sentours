@@ -10,8 +10,8 @@
     "start": "nodemon server.js",
     "start:prod": "cross-env NODE_ENV=production nodemon server.js",
     "debug": "ndb server.js",
-    "watch:js": "parcel watch public/js/index.js",
-    "build:js": "parcel build public/js/index.js --no-content-hash"
+    "watch:js": "parcel watch public/js/index.js --out-dir public/js --out-file bundle.js --public-url /js/",
+    "build:js": "parcel build public/js/index.js --out-dir public/js --out-file bundle.js --public-url /js/ --no-content-hash"
   },
   "repository": {
     "type": "git",
@@ -74,7 +74,7 @@
     "default": {
       "distDir": "./public/js",
       "fileName": "bundle.js",
-      "sourceMap": true,
+      "sourceMap": false,
       "publicUrl": "/js/"
     }
   }

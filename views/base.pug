@@ -10,6 +10,7 @@ html
         href='https://fonts.googleapis.com/css?family=Lato:300,300i,700',
         rel='stylesheet'
       )
+      
       title Natours | #{ title }
 
   body
@@ -23,9 +24,7 @@ html
     // FOOTER
     include _footer
 
-    //- script(
-    //-   src='https://cdnjs.cloudflare.com/ajax/libs/axios/1.11.0/axios.min.js'
-    //- )
-    //- script(src='/js/leafletMap.js')
-    //- script(src='/js/login.js')
+    // Load Stripe library first
+    script(src='https://js.stripe.com/v3/')
+    // Then load your bundle
     script(src='/js/bundle.js')
