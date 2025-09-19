@@ -3,3 +3,8 @@
 *.key
 *id_rsa*
 config.env
+.ssh/
+*.pem
+*.key
+*id_rsa*
+config.env
