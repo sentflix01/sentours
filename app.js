@@ -8,7 +8,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
-const cors = requie('cors');
+const cors = require('cors');
 
 const AppError = require('./utils/AppError');
 const globalErrorHandler = require('./controllers/ErrorController');
