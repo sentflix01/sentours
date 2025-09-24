@@ -8,6 +8,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = requie('cors');
 
 const AppError = require('./utils/AppError');
 const globalErrorHandler = require('./controllers/ErrorController');
@@ -32,6 +33,17 @@ app.set('views', path.join(__dirname, 'views'));
 // 2) GLOBAL MIDDLEWARES
 // ----------------------
 
+// IMPLEMENT CORS
+app.use(cors());
+// Access-Control-Allow-origin *
+// api.natours.com,  front-end natours.com
+// app.use(
+//   cors({
+//     origin: 'https://www.natours.com',
+//   }),
+// );
+app.options('*', cors());
+//app.options('/api/v1/tours/:id', cors())
 // Security HTTP headers (CSP disabled for smooth dev with Leaflet/Stripe)
 app.use(
   helmet({
