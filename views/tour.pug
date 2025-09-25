@@ -41,7 +41,7 @@ block content
           +overviewBox('Next date', date, 'calendar')
           +overviewBox('Difficulty', tour.difficulty, 'trending-up')
           +overviewBox('Participants', `${tour.maxGroupSize} people`, 'user')
-          +overviewBox('Rating', `${tour.ratingsAverage}`, 'star')
+          +overviewBox('Rating', `${tour.ratingsAverage.toFixed(1)} / 5`, 'star')
 
         .overview-box__group
           h2.heading-secondary.ma-bt-lg Your tour guides
@@ -52,18 +52,17 @@ block content
                 src=`/img/users/${guide.photo || 'default.jpg'}`,
                 alt=`${guide.name}`
               )
-
-              - if (guide.role === 'lead-guide')
-              span.overview-box__label Lead guide
-              - if (guide.role === 'guide')
-              span.overview-box__label Tour guide
+              if guide.role === 'lead-guide'
+                span.overview-box__label LEAD GUIDE
+              if guide.role === 'guide'
+                span.overview-box__label TOUR GUIDE
               span.overview-box__text= guide.name
 
     .description-box
       h2.heading-secondary.ma-bt-lg= `About ${tour.name} tour`
       - const paragraphs = tour.description.split('\n');
       each p in paragraphs
-      p.description__text= p
+        p.description__text= p
 
   section.section-pictures
     each img, i in tour.images
