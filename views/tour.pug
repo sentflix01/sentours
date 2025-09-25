@@ -5,9 +5,6 @@ block append head
   link(rel='stylesheet', href='/vendor/leaflet/leaflet.css')
   script(src='/vendor/leaflet/leaflet.js')
  
-
-  
-
 mixin overviewBox(label, text, icon)
   .overview-box__detail
     svg.overview-box__icon
@@ -19,10 +16,7 @@ block content
   section.section-header
     .header__hero
       .header__hero-overlay &nbsp;
-      img.header__hero-img(
-        src=`/img/tours/${tour.imageCover}`,
-        alt=`${tour.name}`
-      )
+      img.header__hero-img(src=`/img/tours/${tour.imageCover}`,alt=`${tour.name}`)
 
     .heading-box
       h1.heading-primary
@@ -39,8 +33,11 @@ block content
 
   section.section-description
     .overview-box
+      div
         .overview-box__group
           h2.heading-secondary.ma-bt-lg Quick facts
+
+
           - const date = tour.startDates[0].toLocaleString('en-us', { month: 'long', year: 'numeric' });
           +overviewBox('Next date', date, 'calendar')
           +overviewBox('Difficulty', tour.difficulty, 'trending-up')
