@@ -114,6 +114,10 @@ document.addEventListener('DOMContentLoaded', function () {
   // Emoji button functionality
   document.querySelectorAll('.emoji-btn').forEach((btn) => {
     btn.addEventListener('click', function () {
+      if (this.disabled) {
+        console.log('Emoji button is disabled - user not logged in');
+        return;
+      }
       const tourId = this.dataset.tourId;
       console.log('Emoji button clicked for tour:', tourId);
       toggleEmojiPicker(tourId);
@@ -123,6 +127,10 @@ document.addEventListener('DOMContentLoaded', function () {
   // Photo button functionality
   document.querySelectorAll('.photo-btn').forEach((btn) => {
     btn.addEventListener('click', function () {
+      if (this.disabled) {
+        console.log('Photo button is disabled - user not logged in');
+        return;
+      }
       const tourId = this.dataset.tourId;
       console.log('Photo button clicked for tour:', tourId);
       // Trigger the hidden file input
