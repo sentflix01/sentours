@@ -86,7 +86,7 @@ block content
             
             .comment-input-section
               .comment-input-container
-                img.user-avatar(src="/img/users/default.jpg" alt="User avatar")
+                img.user-avatar(src=`/img/users/${user.photo || 'default.jpg'}` alt=`Photo of ${user.name}`)
                 .comment-input-wrapper
                   input.comment-input(type="text" placeholder="Write a comment..." data-tour-id=tour.id)
                   .comment-actions
