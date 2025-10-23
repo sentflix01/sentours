@@ -129,7 +129,11 @@ document.addEventListener('DOMContentLoaded', function () {
         '.comment-input',
       ).dataset.tourId;
       console.log('Photo button clicked for tour:', tourId);
-      // Add photo upload functionality here
+      // Trigger the hidden file input
+      const fileInput = document.getElementById(`comment-photo-${tourId}`);
+      if (fileInput) {
+        fileInput.click();
+      }
     });
   });
 
@@ -155,3 +159,20 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
+
+// Photo preview function for comments
+function previewCommentPhoto(event, tourId) {
+  const file = event.target.files[0];
+  const previewArea = document.getElementById(
+    `comment-photo-preview-area-${tourId}`,
+  );
+  const previewImg = document.getElementById(`comment-photo-preview-${tourId}`);
+
+  if (file) {
+    previewImg.src = URL.createObjectURL(file);
+    previewArea.style.display = 'block';
+  } else {
+    previewArea.style.display = 'none';
+    previewImg.src = '';
+  }
+}

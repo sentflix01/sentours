@@ -1492,6 +1492,10 @@ body {
   color: #1877f2;
 }
 
+.comment-action-btn.photo-btn {
+  font-size: 16px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .card__social {
