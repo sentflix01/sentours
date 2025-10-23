@@ -49,10 +49,10 @@ block content
             .social-stats
               .reactions-summary
                 .reaction-icons
-                  img.reaction-icon(src="👍" alt="Like")
-                  img.reaction-icon(src="💖" alt="Love")
-                  img.reaction-icon(src="😂" alt="haha")
-                  img.reaction-icon(src="😡" alt="angry")
+                  span.reaction-icon(role="img" aria-label="like") 👍
+                  span.reaction-icon(role="img" aria-label="love") ❤️
+                  span.reaction-icon(role="img" aria-label="laugh") 😂
+
 
                 span.reaction-count= `${Math.floor(Math.random() * 50) + 10}`
               .comment-count
