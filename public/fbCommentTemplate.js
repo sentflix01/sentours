@@ -83,21 +83,48 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         // Fallback for browsers that don't support Web Share API
         const shareUrl = window.location.origin + `/tour/${tourId}`;
-        navigator.clipboard
-          .writeText(shareUrl)
-          .then(() => {
-            alert('Tour link copied to clipboard!');
-          })
-          .catch(() => {
-            // Fallback if clipboard API is not available
-            const textArea = document.createElement('textarea');
-            textArea.value = shareUrl;
-            document.body.appendChild(textArea);
-            textArea.select();
+
+        // Try modern Clipboard API first
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard
+            .writeText(shareUrl)
+            .then(() => {
+              alert('Tour link copied to clipboard!');
+            })
+            .catch(() => {
+              // Final fallback - create temporary input and copy
+              const textArea = document.createElement('textarea');
+              textArea.value = shareUrl;
+              textArea.style.position = 'fixed';
+              textArea.style.opacity = '0';
+              document.body.appendChild(textArea);
+              textArea.select();
+              textArea.setSelectionRange(0, 99999); // For mobile devices
+              try {
+                document.execCommand('copy');
+                alert('Tour link copied to clipboard!');
+              } catch (err) {
+                alert('Unable to copy link. Please copy manually: ' + shareUrl);
+              }
+              document.body.removeChild(textArea);
+            });
+        } else {
+          // Fallback for very old browsers
+          const textArea = document.createElement('textarea');
+          textArea.value = shareUrl;
+          textArea.style.position = 'fixed';
+          textArea.style.opacity = '0';
+          document.body.appendChild(textArea);
+          textArea.select();
+          textArea.setSelectionRange(0, 99999);
+          try {
             document.execCommand('copy');
-            document.body.removeChild(textArea);
             alert('Tour link copied to clipboard!');
-          });
+          } catch (err) {
+            alert('Unable to copy link. Please copy manually: ' + shareUrl);
+          }
+          document.body.removeChild(textArea);
+        }
       }
 
       console.log('Share tour:', tourId);
