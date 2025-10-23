@@ -93,9 +93,9 @@ block content
                   img.user-avatar(src=`/img/users/default.jpg` alt="Default user photo")
                   .comment-input-wrapper
                     input.comment-input(type="text" placeholder="Log in to write a comment..." data-tour-id=tour.id disabled)
-                    
-                    // Hidden file input
-                    input(id=`comment-photo-${tour.id}`, type="file", accept="image/*", style="display:none", onchange=`previewCommentPhoto(event, '${tour.id}')`)
+                
+                // Hidden file input (available for all users, but only functional for logged-in users)
+                input(id=`comment-photo-${tour.id}`, type="file", accept="image/*", style="display:none", onchange=`previewCommentPhoto(event, '${tour.id}')`)
                 
                 // Emoji Picker Container (hidden by default)
                 div(id=`emoji-picker-container-${tour.id}`, class="emoji-picker-container", style="display:none;")

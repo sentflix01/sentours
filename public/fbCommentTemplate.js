@@ -123,14 +123,14 @@ document.addEventListener('DOMContentLoaded', function () {
   // Photo button functionality
   document.querySelectorAll('.photo-btn').forEach((btn) => {
     btn.addEventListener('click', function () {
-      const tourId = this.closest('.comment-input-container').querySelector(
-        '.comment-input',
-      ).dataset.tourId;
+      const tourId = this.dataset.tourId;
       console.log('Photo button clicked for tour:', tourId);
       // Trigger the hidden file input
       const fileInput = document.getElementById(`comment-photo-${tourId}`);
       if (fileInput) {
         fileInput.click();
+      } else {
+        console.error('File input not found for tour:', tourId);
       }
     });
   });
@@ -166,11 +166,44 @@ function previewCommentPhoto(event, tourId) {
   );
   const previewImg = document.getElementById(`comment-photo-preview-${tourId}`);
 
+  if (!previewArea || !previewImg) {
+    console.error('Preview elements not found for tour:', tourId);
+    return;
+  }
+
   if (file) {
-    previewImg.src = URL.createObjectURL(file);
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file.');
+      event.target.value = ''; // Clear the input
+      return;
+    }
+
+    // Check file size (limit to 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image size should be less than 5MB.');
+      event.target.value = ''; // Clear the input
+      return;
+    }
+
+    // Create object URL and show preview
+    const objectURL = URL.createObjectURL(file);
+    previewImg.src = objectURL;
     previewArea.style.display = 'block';
+
+    // Clean up previous object URL if it exists
+    if (previewImg.dataset.objectUrl) {
+      URL.revokeObjectURL(previewImg.dataset.objectUrl);
+    }
+    previewImg.dataset.objectUrl = objectURL;
+
+    console.log('Photo preview created for tour:', tourId);
   } else {
     previewArea.style.display = 'none';
+    if (previewImg.dataset.objectUrl) {
+      URL.revokeObjectURL(previewImg.dataset.objectUrl);
+      delete previewImg.dataset.objectUrl;
+    }
     previewImg.src = '';
   }
 }
@@ -234,6 +267,12 @@ const visibleEmojiPickers = new Set();
 
 function toggleEmojiPicker(tourId) {
   const picker = document.getElementById(`emoji-picker-container-${tourId}`);
+
+  if (!picker) {
+    console.error('Emoji picker container not found for tour:', tourId);
+    return;
+  }
+
   const isVisible = visibleEmojiPickers.has(tourId);
 
   // Close all other emoji pickers first
@@ -276,7 +315,7 @@ function toggleEmojiPicker(tourId) {
 
 function addEmoji(emoji, tourId) {
   const input = document.querySelector(`input[data-tour-id="${tourId}"]`);
-  if (input) {
+  if (input && !input.disabled) {
     input.value += emoji;
     input.focus();
 
@@ -286,6 +325,16 @@ function addEmoji(emoji, tourId) {
       picker.style.display = 'none';
       visibleEmojiPickers.delete(tourId);
     }
+  } else if (input && input.disabled) {
+    console.log('Cannot add emoji - user not logged in');
+    // Hide emoji picker even if user is not logged in
+    const picker = document.getElementById(`emoji-picker-container-${tourId}`);
+    if (picker) {
+      picker.style.display = 'none';
+      visibleEmojiPickers.delete(tourId);
+    }
+  } else {
+    console.error('Comment input not found for tour:', tourId);
   }
 }
 
