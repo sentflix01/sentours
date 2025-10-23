@@ -92,38 +92,18 @@ document.addEventListener('DOMContentLoaded', function () {
               alert('Tour link copied to clipboard!');
             })
             .catch(() => {
-              // Final fallback - create temporary input and copy
-              const textArea = document.createElement('textarea');
-              textArea.value = shareUrl;
-              textArea.style.position = 'fixed';
-              textArea.style.opacity = '0';
-              document.body.appendChild(textArea);
-              textArea.select();
-              textArea.setSelectionRange(0, 99999); // For mobile devices
-              try {
-                document.execCommand('copy');
-                alert('Tour link copied to clipboard!');
-              } catch (err) {
-                alert('Unable to copy link. Please copy manually: ' + shareUrl);
-              }
-              document.body.removeChild(textArea);
+              // Final fallback - show link for manual copy
+              alert(
+                'Unable to copy automatically. Please copy this link manually: ' +
+                  shareUrl,
+              );
             });
         } else {
           // Fallback for very old browsers
-          const textArea = document.createElement('textarea');
-          textArea.value = shareUrl;
-          textArea.style.position = 'fixed';
-          textArea.style.opacity = '0';
-          document.body.appendChild(textArea);
-          textArea.select();
-          textArea.setSelectionRange(0, 99999);
-          try {
-            document.execCommand('copy');
-            alert('Tour link copied to clipboard!');
-          } catch (err) {
-            alert('Unable to copy link. Please copy manually: ' + shareUrl);
-          }
-          document.body.removeChild(textArea);
+          alert(
+            'Unable to copy automatically. Please copy this link manually: ' +
+              shareUrl,
+          );
         }
       }
 
