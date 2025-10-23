@@ -114,11 +114,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // Emoji button functionality
   document.querySelectorAll('.emoji-btn').forEach((btn) => {
     btn.addEventListener('click', function () {
-      const tourId = this.closest('.comment-input-container').querySelector(
-        '.comment-input',
-      ).dataset.tourId;
+      const tourId = this.dataset.tourId;
       console.log('Emoji button clicked for tour:', tourId);
-      // Add emoji picker functionality here
+      toggleEmojiPicker(tourId);
     });
   });
 
@@ -176,3 +174,135 @@ function previewCommentPhoto(event, tourId) {
     previewImg.src = '';
   }
 }
+
+// Emoji picker functionality
+const emojis = [
+  '😀',
+  '😃',
+  '😄',
+  '😁',
+  '😆',
+  '😂',
+  '🤣',
+  '😊',
+  '😍',
+  '😘',
+  '😎',
+  '😢',
+  '😭',
+  '😡',
+  '👍',
+  '👎',
+  '❤️',
+  '🔥',
+  '👏',
+  '🎉',
+  '🎊',
+  '🎈',
+  '🎁',
+  '🎂',
+  '🍕',
+  '🍔',
+  '🍟',
+  '🍰',
+  '🍦',
+  '🍭',
+  '🌟',
+  '⭐',
+  '🌙',
+  '☀️',
+  '🌈',
+  '⚡',
+  '💯',
+  '💪',
+  '🙌',
+  '👌',
+  '🤞',
+  '✌️',
+  '🤝',
+  '👋',
+  '🤚',
+  '👏',
+  '🙏',
+  '💝',
+  '💖',
+  '💕',
+];
+
+// Track which emoji pickers are visible
+const visibleEmojiPickers = new Set();
+
+function toggleEmojiPicker(tourId) {
+  const picker = document.getElementById(`emoji-picker-container-${tourId}`);
+  const isVisible = visibleEmojiPickers.has(tourId);
+
+  // Close all other emoji pickers first
+  visibleEmojiPickers.forEach((id) => {
+    if (id !== tourId) {
+      const otherPicker = document.getElementById(
+        `emoji-picker-container-${id}`,
+      );
+      if (otherPicker) {
+        otherPicker.style.display = 'none';
+        visibleEmojiPickers.delete(id);
+      }
+    }
+  });
+
+  if (!isVisible) {
+    // Show emoji picker
+    picker.innerHTML = `
+      <div class="emoji-picker-header">
+        <span class="emoji-picker-title">Choose an emoji</span>
+        <button class="emoji-picker-close" onclick="toggleEmojiPicker('${tourId}')" title="Close">×</button>
+      </div>
+      <div class="emoji-grid">
+        ${emojis
+          .map(
+            (emoji) =>
+              `<span class="emoji-item" onclick="addEmoji('${emoji}', '${tourId}')" title="${emoji}">${emoji}</span>`,
+          )
+          .join('')}
+      </div>
+    `;
+    picker.style.display = 'block';
+    visibleEmojiPickers.add(tourId);
+  } else {
+    // Hide emoji picker
+    picker.style.display = 'none';
+    visibleEmojiPickers.delete(tourId);
+  }
+}
+
+function addEmoji(emoji, tourId) {
+  const input = document.querySelector(`input[data-tour-id="${tourId}"]`);
+  if (input) {
+    input.value += emoji;
+    input.focus();
+
+    // Hide emoji picker after selection
+    const picker = document.getElementById(`emoji-picker-container-${tourId}`);
+    if (picker) {
+      picker.style.display = 'none';
+      visibleEmojiPickers.delete(tourId);
+    }
+  }
+}
+
+// Close emoji picker when clicking outside
+document.addEventListener('click', function (event) {
+  if (
+    !event.target.closest('.emoji-btn') &&
+    !event.target.closest('.emoji-picker-container')
+  ) {
+    visibleEmojiPickers.forEach((tourId) => {
+      const picker = document.getElementById(
+        `emoji-picker-container-${tourId}`,
+      );
+      if (picker) {
+        picker.style.display = 'none';
+        visibleEmojiPickers.delete(tourId);
+      }
+    });
+  }
+});

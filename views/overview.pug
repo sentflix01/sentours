@@ -82,18 +82,18 @@ block content
                 .comment-input-wrapper
                   input.comment-input(type="text" placeholder="Write a comment..." data-tour-id=tour.id)
                   .comment-actions
-                    button.comment-action-btn.emoji-btn(title="Add emoji")
+                    button.comment-action-btn.emoji-btn(title="Add emoji" data-tour-id=tour.id)
                       svg(width="16" height="16" viewBox="0 0 24 24" fill="currentColor")
                         path(d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z")
-                    button.comment-action-btn.photo-btn(title="Add photo") 
+                    button.comment-action-btn.photo-btn(title="Add photo" data-tour-id=tour.id) 
                       svg(width="16" height="16" viewBox="0 0 24 24" fill="currentColor") 
                         path(d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z")
-                    // 📸 Add Photo Button (emoji version)
-                    //- button.comment-action-btn.photo-btn(type="button", title="Add photo", onclick=`document.getElementById('comment-photo-${tour.id}').click()`)
-                    //-   | 📸
                     
                     // Hidden file input
                     input(id=`comment-photo-${tour.id}`, type="file", accept="image/*", style="display:none", onchange=`previewCommentPhoto(event, '${tour.id}')`)
+                
+                // Emoji Picker Container (hidden by default)
+                div(id=`emoji-picker-container-${tour.id}`, class="emoji-picker-container", style="display:none;")
                 
                 // Image preview area
                 div(id=`comment-photo-preview-area-${tour.id}`, style="margin-top:10px; display:none;")
