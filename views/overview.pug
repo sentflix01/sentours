@@ -43,3 +43,44 @@ block content
               span.card__footer-value= tour.ratingsAverage.toFixed(1)
               span.card__footer-text= ` rating (${tour.ratingsQuantity})`
             a.btn.btn--green.btn--small(href=`/tour/${tour.slug}`) Details
+
+          // Facebook-style comment section
+          .card__social
+            .social-stats
+              .reactions-summary
+                .reaction-icons
+                  img.reaction-icon(src="data:image/svg+xml,%3Csvg fill='none' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M15.9953 7.9996c0 4.418-3.5816 7.9996-7.9996 7.9996S-.004 12.4176-.004 7.9996 3.5776 0 7.9957 0c4.418 0 7.9996 3.5815 7.9996 7.9996Z' fill='%23FFD700'/%3E%3C/svg%3E" alt="Like")
+                  img.reaction-icon(src="data:image/svg+xml,%3Csvg fill='none' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M15.9953 7.9996c0 4.418-3.5816 7.9996-7.9996 7.9996S-.004 12.4176-.004 7.9996 3.5776 0 7.9957 0c4.418 0 7.9996 3.5815 7.9996 7.9996Z' fill='%23FF69B4'/%3E%3C/svg%3E" alt="Love")
+                span.reaction-count= `${Math.floor(Math.random() * 50) + 10}`
+              .comment-count
+                span= `${Math.floor(Math.random() * 20) + 5} comments`
+            
+            .social-actions
+              .action-buttons
+                button.action-btn.like-btn(data-tour-id=tour.id)
+                  svg.action-icon(width="20" height="20" viewBox="0 0 24 24" fill="currentColor")
+                    path(d="M7.493 18.75c-.425 0-.82-.236-.975-.632A7.48 7.48 0 016 15.375c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75 2.25 2.25 0 012.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558-.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23h-.777zM2.331 10.977a11.969 11.969 0 00-.831 5.097 12 12 0 00.52 3.067c.26.604.464 1.038.8 1.416.248.301.66.4 1.01.4.4 0 .8-.2 1.01-.4.336-.378.54-.812.8-1.416.26-.604.52-1.463.52-3.067 0-1.699-.277-3.33-.831-5.097a.75.75 0 00-.724-.513H3.055a.75.75 0 00-.724.513z")
+                  span Like
+                
+                button.action-btn.comment-btn(data-tour-id=tour.id)
+                  svg.action-icon(width="20" height="20" viewBox="0 0 24 24" fill="currentColor")
+                    path(d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z")
+                  span Comment
+                
+                button.action-btn.share-btn(data-tour-id=tour.id)
+                  svg.action-icon(width="20" height="20" viewBox="0 0 24 24" fill="currentColor")
+                    path(d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z")
+                  span Share
+            
+            .comment-input-section
+              .comment-input-container
+                img.user-avatar(src="/img/users/default.jpg" alt="User avatar")
+                .comment-input-wrapper
+                  input.comment-input(type="text" placeholder="Write a comment..." data-tour-id=tour.id)
+                  .comment-actions
+                    button.comment-action-btn.emoji-btn(title="Add emoji")
+                      svg(width="16" height="16" viewBox="0 0 24 24" fill="currentColor")
+                        path(d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z")
+                    button.comment-action-btn.photo-btn(title="Add photo")
+                      svg(width="16" height="16" viewBox="0 0 24 24" fill="currentColor")
+                        path(d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z")
