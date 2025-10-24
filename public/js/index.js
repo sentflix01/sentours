@@ -2,6 +2,7 @@
 import '@babel/polyfill';
 import { displayMap } from './leafletMap';
 import { login, logout } from './login';
+import { signup } from './signup';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
 import { showAlert } from './alerts';
