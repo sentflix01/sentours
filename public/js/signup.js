@@ -5,7 +5,7 @@ import { showAlert } from './alerts';
 export const signup = async (name, email, password, passwordConfirm) => {
   try {
     const res = await axios({
-      method: 'POST',
+      method: 'GET',
       url: '/api/v1/users/signup',
       data: { name, email, password, passwordConfirm },
     });
