@@ -9,7 +9,7 @@ const Email = require('../utils/email');
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET || 'your-secret-key', {
     expiresIn: process.env.JWT_EXPIRES_IN || '90d',
-    // jwt.sign({ id }, process.env.JWT_SECRET, {
+    // jwt.sign({ id }, process.env.JWT_SECRET, { the JWT_SECRET is a secret key for signing the token and the secret key length must be 256 bits or 32 bytes. This is a security best practice.
     //   expiresIn: process.env.JWT_EXPIRES_IN,
   });
 

@@ -9,6 +9,7 @@ Router.use(viewsController.alerts);
 
 Router.get('/', authController.isLoggedIn, viewsController.getOverview);
 Router.get('/tour/:slug', authController.isLoggedIn, viewsController.getTour);
+Router.get('/signup', authController.isLoggedIn, viewsController.getSignUpForm);
 Router.get('/login', authController.isLoggedIn, viewsController.getLoginForm);
 Router.get('/me', authController.protect, viewsController.getAccount);
 Router.get(
