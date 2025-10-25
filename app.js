@@ -71,14 +71,18 @@ app.post(
   bookingController.webhookCheckout,
 );
 
-// Body parser & cookies
+// Body parser & cookies from the body
 app.use(express.json({ limit: '10kb' }));
+// Body parser & cookies from the urlencoded
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+// Body parser & cookies from the cookieParser
 app.use(cookieParser());
 
-// Data sanitization
+// Data sanitization from the mongoSanitize
 app.use(mongoSanitize());
+// Data sanitization from the xss
 app.use(xss());
+// Data sanitization from the hpp
 
 // Prevent parameter pollution
 app.use(
