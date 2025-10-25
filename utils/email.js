@@ -47,6 +47,9 @@ module.exports = class Email {
           pass: process.env.BREVO_PASS,
         },
         secure: false,
+        connectionTimeout: 10000, // 10 seconds
+        greetingTimeout: 5000, // 5 seconds
+        socketTimeout: 10000, // 10 seconds
       });
     }
 
@@ -58,15 +61,9 @@ module.exports = class Email {
         pass: process.env.EMAIL_PASSWORD,
       },
       secure: false, // Mailtrap does not use SSL by default
-    });
-
-    // Test the connection
-    transport.verify((error, success) => {
-      if (error) {
-        console.log('Email transport error:', error);
-      } else {
-        console.log('Email transport ready:', success);
-      }
+      connectionTimeout: 10000, // 10 seconds
+      greetingTimeout: 5000, // 5 seconds
+      socketTimeout: 10000, // 10 seconds
     });
 
     return transport;
@@ -116,9 +113,26 @@ module.exports = class Email {
 
     console.log('Mail options:', mailOptions);
 
-    // 3) create a transport and send email
-    const result = await this.newTransport().sendMail(mailOptions);
-    console.log('Email sent successfully:', result);
+    // 3) create a transport and send email with timeout
+    const transport = this.newTransport();
+    
+    // Wrap sendMail with a timeout
+    const sendWithTimeout = (mailOptions, timeout = 15000) => {
+      return Promise.race([
+        transport.sendMail(mailOptions),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Email sending timeout')), timeout)
+        )
+      ]);
+    };
+
+    try {
+      const result = await sendWithTimeout(mailOptions);
+      console.log('Email sent successfully:', result);
+    } catch (error) {
+      console.error('Email sending failed:', error);
+      throw error;
+    }
   }
   async sendWelcome() {
     await this.send('welcome', 'Welcome to the Natours Familly!');

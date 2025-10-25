@@ -37,21 +37,30 @@ const createSendToken = (user, statusCode, req, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
+  console.log('Signup request received:', { name: req.body.name, email: req.body.email });
+  
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
   });
+  
+  console.log('User created successfully:', newUser.email);
+  
   const url = `${req.protocol}://${req.get('host')}/me`;
-  // console.log(url);
+  console.log('Welcome email URL:', url);
 
-  await new Email(newUser, url).sendWelcome();
+  try {
+    await new Email(newUser, url).sendWelcome();
+    console.log('Welcome email sent successfully');
+  } catch (emailError) {
+    console.error('Email sending failed:', emailError);
+    // Don't fail the signup if email fails
+  }
 
   createSendToken(newUser, 201, req, res);
-
-  // ***jonas lecture******const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-  //     expiresIn: process.env.JWT_EXPIRES_IN,})
+  console.log('Signup completed successfully');
 });
 
 exports.login = catchAsync(async (req, res, next) => {

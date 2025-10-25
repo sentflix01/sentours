@@ -22,7 +22,10 @@ const viewRouter = require('./routes/viewRoutes');
 // start express app
 const app = express();
 
-app.enable('trust proxy');
+// Trust proxy for deployment (Render, Heroku, etc.)
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 
 // ----------------------
 // 1) VIEW ENGINE SETUP
@@ -62,6 +65,8 @@ const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
   message: 'Too many requests from this IP, please try again in an hour',
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 app.use('/api', limiter);
 
