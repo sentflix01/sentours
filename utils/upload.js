@@ -2,6 +2,7 @@ const multer = require('multer');
 const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs');
+const AppError = require('./AppError');
 
 // Create comments directory if it doesn't exist
 const commentsDir = 'public/img/comments';
@@ -15,7 +16,7 @@ const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
   } else {
-    cb(new Error('Not an image! Please upload only images.'), false);
+    cb(new AppError('Not an image! Please upload only images.', 400), false);
   }
 };
 

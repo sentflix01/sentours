@@ -118,7 +118,7 @@ exports.getTourEmojiSummary = catchAsync(async (req, res, next) => {
   const { tourId } = req.params;
 
   const emojiSummary = await Comment.aggregate([
-    { $match: { tour: mongoose.Types.ObjectId(tourId) } },
+    { $match: { tour: new mongoose.Types.ObjectId(tourId) } },
     { $unwind: '$emojiReactions' },
     {
       $group: {
@@ -168,7 +168,6 @@ exports.uploadCommentPhoto = catchAsync(async (req, res, next) => {
 });
 
 // Use factory functions for basic CRUD operations
-exports.getAllComments = factory.getAll(Comment);
 exports.getComment = factory.getOne(Comment);
 exports.updateComment = factory.updateOne(Comment);
 exports.deleteComment = factory.deleteOne(Comment);
