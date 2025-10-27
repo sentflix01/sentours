@@ -88,7 +88,9 @@ if (alertMessage) showAlert('success', alertMessage, 20);
 window.addEventListener('DOMContentLoaded', async () => {
   document.querySelectorAll('[data-tour-id]').forEach(async (el) => {
     const tourId = el.getAttribute('data-tour-id');
-    const commentsContainer = document.getElementById(`comments-container-${tourId}`);
+    const commentsContainer = document.getElementById(
+      `comments-container-${tourId}`,
+    );
     if (!commentsContainer) return;
     try {
       const response = await fetch(`/api/v1/tours/${tourId}/comments/default`);
@@ -124,10 +126,12 @@ window.addEventListener('DOMContentLoaded', async () => {
         html += '</div>';
         commentsContainer.innerHTML = html;
       } else {
-        commentsContainer.innerHTML = '<p class="no-comments">No comments yet. Be the first to comment!</p>';
+        commentsContainer.innerHTML =
+          '<p class="no-comments">No comments yet. Be the first to comment!</p>';
       }
     } catch (error) {
-      commentsContainer.innerHTML = '<p class="no-comments">Could not load comments.</p>';
+      commentsContainer.innerHTML =
+        '<p class="no-comments">Could not load comments.</p>';
     }
   });
 });

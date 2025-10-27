@@ -151,3 +151,43 @@ cb(new AppError('Not an image! Please upload only images.', 400), false);
 ```
 
 The deployment should now work correctly! The error was specifically about route callbacks being undefined, which was caused by the Mongoose ObjectId deprecation issue in the aggregation pipeline. With these fixes, your comment system should deploy successfully and work as expected.
+
+[7 tools called]
+
+**Implementation is complete! Here’s what is now set up:**
+
+---
+
+## ✅ Facebook-Style Default Comment View (Per Tour)
+
+- **Backend**:
+  - New route `/api/v1/tours/:tourId/comments/default` returns:
+    - The latest (most recent) comment for the tour
+    - The latest reply for that comment (if any)
+
+- **Frontend**:
+  - On page load, for each tour:
+    - Fetches only 1 default comment (the most recent) and its latest reply
+    - Renders exactly like Facebook: single comment + reply shown below each tour card
+    - If no comment exists, shows a "Be the first to comment!" message
+    - If more should be shown, you can add a "View all comments" button/interaction later
+
+- **All other "full list" comment APIs** still work for expanding/all-comments view when/if you want it in the UI.
+
+---
+
+## 🔗 You can now:
+
+- Deploy and check any tour card: you’ll see a single comment (and reply for it if any), styled for clarity.
+- Confirm that this meets your Facebook-style “default per-tour comment” goal.
+- (Optional) Add a UI button/link for “Show all comments for this tour” if you want the full thread.
+
+---
+
+## 🚦 **Next Steps for You**
+
+- Test on your site (local and deployed).
+- Add/expand “show all” logic as desired for UX.
+
+If you want to tune the per-tour comment output even more or add a “show all” button/flow, let me know!  
+Otherwise, you now have a comment section that matches your requirements: 1 comment, 1 reply—per tour, by default—like Facebook.

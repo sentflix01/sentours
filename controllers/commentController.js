@@ -61,14 +61,16 @@ exports.getDefaultCommentForTour = catchAsync(async (req, res, next) => {
   // If a comment has replies, find the most recent reply
   let latestReply = null;
   if (comment && comment.replies && comment.replies.length > 0) {
-    latestReply = [...comment.replies].sort((a,b)=>b.createdAt-a.createdAt)[0];
+    latestReply = [...comment.replies].sort(
+      (a, b) => b.createdAt - a.createdAt,
+    )[0];
   }
   res.status(200).json({
     status: 'success',
     data: {
       comment,
-      latestReply
-    }
+      latestReply,
+    },
   });
 });
 
