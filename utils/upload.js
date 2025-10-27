@@ -23,33 +23,23 @@ const multerFilter = (req, file, cb) => {
 const upload = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
-  },
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
 
 exports.uploadCommentPhoto = upload.single('photo');
 
 exports.resizeCommentPhoto = async (req, res, next) => {
   if (!req.file) return next();
-
   try {
     req.file.filename = `comment-${req.user.id}-${Date.now()}.jpeg`;
-
     await sharp(req.file.buffer)
-      .resize(800, 600, {
-        fit: 'inside',
-        withoutEnlargement: true,
-      })
+      .resize(800, 600, { fit: 'inside', withoutEnlargement: true })
       .toFormat('jpeg')
       .jpeg({ quality: 85 })
       .toFile(path.join(commentsDir, req.file.filename));
-
     next();
   } catch (error) {
     console.error('Error resizing comment photo:', error);
     next(error);
   }
 };
-
-module.exports = upload;
