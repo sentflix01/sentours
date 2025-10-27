@@ -7,7 +7,7 @@ const Router = express.Router({ mergeParams: true });
 
 // Public routes (no authentication required)
 Router.route('/').get(commentController.getTourComments);
-
+Router.route('/default').get(commentController.getDefaultCommentForTour);
 Router.route('/emoji-summary').get(commentController.getTourEmojiSummary);
 
 // Protected routes (authentication required)

@@ -49,6 +49,29 @@ exports.createComment = catchAsync(async (req, res, next) => {
   });
 });
 
+// Get default comment for a tour (latest comment and its latest reply)
+exports.getDefaultCommentForTour = catchAsync(async (req, res, next) => {
+  const { tourId } = req.params;
+  // Find the most recent comment for this tour
+  const comment = await Comment.findOne({ tour: tourId })
+    .sort({ createdAt: -1 })
+    .populate('user', 'name photo')
+    .populate('replies.user', 'name photo');
+
+  // If a comment has replies, find the most recent reply
+  let latestReply = null;
+  if (comment && comment.replies && comment.replies.length > 0) {
+    latestReply = [...comment.replies].sort((a,b)=>b.createdAt-a.createdAt)[0];
+  }
+  res.status(200).json({
+    status: 'success',
+    data: {
+      comment,
+      latestReply
+    }
+  });
+});
+
 // Add emoji reaction to a comment
 exports.addEmojiReaction = catchAsync(async (req, res, next) => {
   const { commentId } = req.params;

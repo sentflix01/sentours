@@ -83,3 +83,51 @@ if (bookBtn) {
 
 const alertMessage = document.querySelector('body').dataset.alert;
 if (alertMessage) showAlert('success', alertMessage, 20);
+
+// Facebook-style: Show only 1 default comment (and its latest reply) per tour on load
+window.addEventListener('DOMContentLoaded', async () => {
+  document.querySelectorAll('[data-tour-id]').forEach(async (el) => {
+    const tourId = el.getAttribute('data-tour-id');
+    const commentsContainer = document.getElementById(`comments-container-${tourId}`);
+    if (!commentsContainer) return;
+    try {
+      const response = await fetch(`/api/v1/tours/${tourId}/comments/default`);
+      const data = await response.json();
+      if (data.status === 'success' && data.data.comment) {
+        const comment = data.data.comment;
+        const reply = data.data.latestReply;
+        // Render the comment
+        let html = `<div class="comment-item">
+          <div class="comment-header">
+            <img class="comment-avatar" src="/img/users/${comment.user.photo || 'default.jpg'}" alt="${comment.user.name}">
+            <div class="comment-info">
+              <span class="comment-author">${comment.user.name}</span>
+              <span class="comment-time">${new Date(comment.createdAt).toLocaleString()}</span>
+            </div>
+          </div>
+          <div class="comment-content">
+            <p class="comment-text">${comment.text}</p>
+            ${comment.photo ? `<img class="comment-photo" src="/img/comments/${comment.photo}" alt="comment photo">` : ''}
+          </div>`;
+        if (reply) {
+          html += `<div class="comment-replies">
+            <div class="comment-reply">
+              <img class="reply-avatar" src="/img/users/${reply.user.photo || 'default.jpg'}" alt="${reply.user.name}">
+              <div class="reply-content">
+                <span class="reply-author">${reply.user.name}</span>
+                <span class="reply-text">${reply.text}</span>
+                <span class="reply-time">${new Date(reply.createdAt).toLocaleString()}</span>
+              </div>
+            </div>
+          </div>`;
+        }
+        html += '</div>';
+        commentsContainer.innerHTML = html;
+      } else {
+        commentsContainer.innerHTML = '<p class="no-comments">No comments yet. Be the first to comment!</p>';
+      }
+    } catch (error) {
+      commentsContainer.innerHTML = '<p class="no-comments">Could not load comments.</p>';
+    }
+  });
+});
