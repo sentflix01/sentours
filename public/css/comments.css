@@ -1,0 +1,379 @@
+/* Comment System Styles */
+
+.comments-section {
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-top: 15px;
+  padding: 15px;
+  border: 1px solid #e9ecef;
+}
+
+.comments-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.comments-header h4 {
+  margin: 0;
+  color: #495057;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.close-comments-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.close-comments-btn:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.comments-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.comment-item {
+  background: white;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e9ecef;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.comment-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.comment-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-author {
+  font-weight: 600;
+  color: #212529;
+  font-size: 14px;
+}
+
+.comment-time {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.comment-content {
+  margin-bottom: 10px;
+}
+
+.comment-text {
+  margin: 0;
+  color: #495057;
+  line-height: 1.4;
+  font-size: 14px;
+}
+
+.comment-photo {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 6px;
+  margin-top: 8px;
+  object-fit: cover;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #f1f3f4;
+}
+
+.comment-like-btn,
+.comment-emoji-btn,
+.comment-reply-btn {
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.comment-like-btn:hover,
+.comment-emoji-btn:hover,
+.comment-reply-btn:hover {
+  background: #f8f9fa;
+  color: #495057;
+}
+
+.comment-like-btn.liked {
+  color: #007bff;
+  background: #e3f2fd;
+}
+
+.like-count {
+  font-weight: 500;
+}
+
+.comment-reactions {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.comment-reaction {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.comment-reaction:hover {
+  background: #e9ecef;
+  transform: translateY(-1px);
+}
+
+.comment-replies {
+  margin-top: 12px;
+  padding-left: 20px;
+  border-left: 2px solid #e9ecef;
+}
+
+.comment-reply {
+  display: flex;
+  margin-bottom: 8px;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.reply-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-right: 8px;
+  object-fit: cover;
+}
+
+.reply-content {
+  flex: 1;
+}
+
+.reply-author {
+  font-weight: 600;
+  color: #212529;
+  font-size: 12px;
+}
+
+.reply-text {
+  margin: 2px 0;
+  color: #495057;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.reply-time {
+  font-size: 11px;
+  color: #6c757d;
+}
+
+.no-comments {
+  text-align: center;
+  color: #6c757d;
+  font-style: italic;
+  padding: 20px;
+  margin: 0;
+}
+
+/* Emoji Picker Styles */
+.emoji-picker-container {
+  position: absolute;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-width: 300px;
+  margin-top: 5px;
+}
+
+.emoji-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid #e9ecef;
+  background: #f8f9fa;
+  border-radius: 8px 8px 0 0;
+}
+
+.emoji-picker-title {
+  font-weight: 600;
+  color: #495057;
+  font-size: 14px;
+}
+
+.emoji-picker-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.emoji-picker-close:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 2px;
+  padding: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.emoji-item {
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  font-size: 16px;
+}
+
+.emoji-item:hover {
+  background: #f8f9fa;
+  transform: scale(1.1);
+}
+
+/* Photo Preview Styles */
+.comment-photo-preview-area {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.comment-photo-preview {
+  max-width: 100%;
+  max-height: 150px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .comments-section {
+    margin-top: 10px;
+    padding: 10px;
+  }
+
+  .comment-item {
+    padding: 10px;
+  }
+
+  .comment-actions {
+    gap: 10px;
+  }
+
+  .emoji-picker-container {
+    max-width: 250px;
+  }
+
+  .emoji-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Animation for new comments */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.comment-item {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Loading state */
+.comments-loading {
+  text-align: center;
+  padding: 20px;
+  color: #6c757d;
+}
+
+.comments-loading::after {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

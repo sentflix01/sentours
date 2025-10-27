@@ -1,6 +1,9 @@
-// Facebook-style social interactions for tour cards
+// Facebook-style social interactions for tour cards with API integration
 
 document.addEventListener('DOMContentLoaded', function () {
+  // Initialize comment sections for each tour
+  initializeCommentSections();
+
   // Like button functionality
   document.querySelectorAll('.like-btn').forEach((btn) => {
     btn.addEventListener('click', function () {
@@ -48,20 +51,31 @@ document.addEventListener('DOMContentLoaded', function () {
     input.addEventListener('keypress', function (e) {
       if (e.key === 'Enter' && this.value.trim()) {
         const tourId = this.dataset.tourId;
+        const commentText = this.value.trim();
 
-        // Update comment count
-        const commentCount = this.closest('.card__social').querySelector(
-          '.comment-count span',
-        );
-        if (commentCount) {
-          let currentCount = parseInt(commentCount.textContent) || 0;
-          currentCount += 1;
-          commentCount.textContent = `${currentCount} comments`;
-        }
+        // Create comment via API
+        createComment(tourId, commentText)
+          .then(() => {
+            // Update comment count
+            const commentCount = this.closest('.card__social').querySelector(
+              '.comment-count span',
+            );
+            if (commentCount) {
+              let currentCount = parseInt(commentCount.textContent) || 0;
+              currentCount += 1;
+              commentCount.textContent = `${currentCount} comments`;
+            }
 
-        // Add your comment functionality here (API call, etc.)
-        console.log('Comment for tour:', tourId, ':', this.value);
-        this.value = '';
+            // Clear input
+            this.value = '';
+
+            // Refresh comments for this tour
+            loadTourComments(tourId);
+          })
+          .catch((error) => {
+            console.error('Error creating comment:', error);
+            alert('Failed to post comment. Please try again.');
+          });
       }
     });
   });
@@ -150,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
         this.closest('.card__social').querySelector('.comment-input').dataset
           .tourId;
       console.log('View comments for tour:', tourId);
-      // Add functionality to show/hide comments here
+      toggleCommentsSection(tourId);
     });
   });
 
@@ -161,10 +175,280 @@ document.addEventListener('DOMContentLoaded', function () {
         this.closest('.card__social').querySelector('.comment-input').dataset
           .tourId;
       console.log('View reactions for tour:', tourId);
-      // Add functionality to show who reacted here
+      showEmojiSummary(tourId);
     });
   });
 });
+
+// Initialize comment sections for all tours
+function initializeCommentSections() {
+  document.querySelectorAll('.card__social').forEach((socialSection) => {
+    const tourId = socialSection.querySelector('.comment-input').dataset.tourId;
+    if (tourId) {
+      loadTourComments(tourId);
+      loadTourEmojiSummary(tourId);
+    }
+  });
+}
+
+// Load comments for a specific tour
+async function loadTourComments(tourId) {
+  try {
+    const response = await fetch(`/api/v1/tours/${tourId}/comments`);
+    const data = await response.json();
+
+    if (data.status === 'success') {
+      displayComments(tourId, data.data.comments);
+    }
+  } catch (error) {
+    console.error('Error loading comments:', error);
+  }
+}
+
+// Display comments for a tour
+function displayComments(tourId, comments) {
+  const commentsContainer = document.getElementById(
+    `comments-container-${tourId}`,
+  );
+  if (!commentsContainer) return;
+
+  if (comments.length === 0) {
+    commentsContainer.innerHTML =
+      '<p class="no-comments">No comments yet. Be the first to comment!</p>';
+    return;
+  }
+
+  const commentsHTML = comments
+    .map(
+      (comment) => `
+    <div class="comment-item" data-comment-id="${comment._id}">
+      <div class="comment-header">
+        <img src="/img/users/${comment.user.photo || 'default.jpg'}" alt="${comment.user.name}" class="comment-avatar">
+        <div class="comment-info">
+          <span class="comment-author">${comment.user.name}</span>
+          <span class="comment-time">${formatTimeAgo(comment.createdAt)}</span>
+        </div>
+      </div>
+      <div class="comment-content">
+        ${comment.text ? `<p class="comment-text">${comment.text}</p>` : ''}
+        ${comment.photo ? `<img src="/img/comments/${comment.photo}" alt="Comment photo" class="comment-photo">` : ''}
+      </div>
+      <div class="comment-actions">
+        <button class="comment-like-btn" onclick="toggleCommentLike('${comment._id}')">
+          <span class="like-count">${comment.likeCount || 0}</span> 👍
+        </button>
+        <button class="comment-emoji-btn" onclick="showCommentEmojiPicker('${comment._id}')">
+          😀
+        </button>
+        <button class="comment-reply-btn" onclick="showReplyForm('${comment._id}')">
+          Reply
+        </button>
+      </div>
+      <div class="comment-reactions" id="reactions-${comment._id}">
+        ${displayCommentReactions(comment.emojiReactions)}
+      </div>
+      <div class="comment-replies" id="replies-${comment._id}">
+        ${displayCommentReplies(comment.replies)}
+      </div>
+    </div>
+  `,
+    )
+    .join('');
+
+  commentsContainer.innerHTML = commentsHTML;
+}
+
+// Display comment reactions
+function displayCommentReactions(reactions) {
+  if (!reactions || reactions.length === 0) return '';
+
+  return reactions
+    .map(
+      (reaction) => `
+    <span class="comment-reaction" onclick="addCommentEmojiReaction('${reaction.emoji}')">
+      ${reaction.emoji} ${reaction.count}
+    </span>
+  `,
+    )
+    .join('');
+}
+
+// Display comment replies
+function displayCommentReplies(replies) {
+  if (!replies || replies.length === 0) return '';
+
+  return replies
+    .map(
+      (reply) => `
+    <div class="comment-reply">
+      <img src="/img/users/${reply.user.photo || 'default.jpg'}" alt="${reply.user.name}" class="reply-avatar">
+      <div class="reply-content">
+        <span class="reply-author">${reply.user.name}</span>
+        <p class="reply-text">${reply.text}</p>
+        <span class="reply-time">${formatTimeAgo(reply.createdAt)}</span>
+      </div>
+    </div>
+  `,
+    )
+    .join('');
+}
+
+// Load emoji summary for a tour
+async function loadTourEmojiSummary(tourId) {
+  try {
+    const response = await fetch(
+      `/api/v1/tours/${tourId}/comments/emoji-summary`,
+    );
+    const data = await response.json();
+
+    if (data.status === 'success') {
+      displayEmojiSummary(tourId, data.data.emojiSummary);
+    }
+  } catch (error) {
+    console.error('Error loading emoji summary:', error);
+  }
+}
+
+// Display emoji summary
+function displayEmojiSummary(tourId, emojiSummary) {
+  const reactionsSummary = document
+    .querySelector(`[data-tour-id="${tourId}"]`)
+    .closest('.card__social')
+    .querySelector('.reactions-summary .reaction-icons');
+  if (!reactionsSummary) return;
+
+  const emojiHTML = emojiSummary
+    .slice(0, 4)
+    .map(
+      (item) => `
+    <span class="reaction-icon" role="img" aria-label="${item.emoji}">${item.emoji}</span>
+  `,
+    )
+    .join('');
+
+  reactionsSummary.innerHTML = emojiHTML;
+}
+
+// Create a new comment
+async function createComment(tourId, text, photo = null) {
+  const response = await fetch(`/api/v1/tours/${tourId}/comments`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      text,
+      photo,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create comment');
+  }
+
+  return response.json();
+}
+
+// Toggle comment like
+async function toggleCommentLike(commentId) {
+  try {
+    const response = await fetch(`/api/v1/comments/${commentId}/like`, {
+      method: 'POST',
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      // Update the like count in the UI
+      const likeBtn = document.querySelector(
+        `[data-comment-id="${commentId}"] .comment-like-btn`,
+      );
+      if (likeBtn) {
+        likeBtn.querySelector('.like-count').textContent =
+          data.data.comment.likeCount;
+      }
+    }
+  } catch (error) {
+    console.error('Error toggling like:', error);
+  }
+}
+
+// Add emoji reaction to comment
+async function addCommentEmojiReaction(commentId, emoji) {
+  try {
+    const response = await fetch(`/api/v1/comments/${commentId}/emoji`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ emoji }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      // Update reactions display
+      const reactionsContainer = document.getElementById(
+        `reactions-${commentId}`,
+      );
+      if (reactionsContainer) {
+        reactionsContainer.innerHTML = displayCommentReactions(
+          data.data.comment.emojiReactions,
+        );
+      }
+    }
+  } catch (error) {
+    console.error('Error adding emoji reaction:', error);
+  }
+}
+
+// Toggle comments section visibility
+function toggleCommentsSection(tourId) {
+  const commentsContainer = document.getElementById(
+    `comments-container-${tourId}`,
+  );
+  if (!commentsContainer) {
+    // Create comments container if it doesn't exist
+    const socialSection = document
+      .querySelector(`[data-tour-id="${tourId}"]`)
+      .closest('.card__social');
+    const commentsHTML = `
+      <div class="comments-section" id="comments-container-${tourId}">
+        <div class="comments-header">
+          <h4>Comments</h4>
+          <button class="close-comments-btn" onclick="toggleCommentsSection('${tourId}')">×</button>
+        </div>
+        <div class="comments-list">
+          <!-- Comments will be loaded here -->
+        </div>
+      </div>
+    `;
+    socialSection.insertAdjacentHTML('beforeend', commentsHTML);
+    loadTourComments(tourId);
+  } else {
+    commentsContainer.style.display =
+      commentsContainer.style.display === 'none' ? 'block' : 'none';
+  }
+}
+
+// Show emoji summary modal
+function showEmojiSummary(tourId) {
+  // Implementation for showing detailed emoji summary
+  console.log('Show emoji summary for tour:', tourId);
+}
+
+// Format time ago
+function formatTimeAgo(dateString) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInSeconds = Math.floor((now - date) / 1000);
+
+  if (diffInSeconds < 60) return 'Just now';
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
+  if (diffInSeconds < 2592000)
+    return `${Math.floor(diffInSeconds / 86400)}d ago`;
+
+  return date.toLocaleDateString();
+}
 
 // Photo preview function for comments
 function previewCommentPhoto(event, tourId) {
@@ -194,6 +478,31 @@ function previewCommentPhoto(event, tourId) {
       return;
     }
 
+    // Upload photo first
+    uploadCommentPhoto(file, tourId)
+      .then((photoFilename) => {
+        // Create comment with photo
+        const commentInput = document.querySelector(
+          `input[data-tour-id="${tourId}"]`,
+        );
+        if (commentInput && commentInput.value.trim()) {
+          createComment(tourId, commentInput.value.trim(), photoFilename)
+            .then(() => {
+              commentInput.value = '';
+              previewArea.style.display = 'none';
+              loadTourComments(tourId);
+            })
+            .catch((error) => {
+              console.error('Error creating comment with photo:', error);
+              alert('Failed to post comment with photo. Please try again.');
+            });
+        }
+      })
+      .catch((error) => {
+        console.error('Error uploading photo:', error);
+        alert('Failed to upload photo. Please try again.');
+      });
+
     // Create object URL and show preview
     const objectURL = URL.createObjectURL(file);
     previewImg.src = objectURL;
@@ -214,6 +523,27 @@ function previewCommentPhoto(event, tourId) {
     }
     previewImg.src = '';
   }
+}
+
+// Upload comment photo
+async function uploadCommentPhoto(file, tourId) {
+  const formData = new FormData();
+  formData.append('photo', file);
+
+  const response = await fetch(
+    `/api/v1/tours/${tourId}/comments/upload-photo`,
+    {
+      method: 'POST',
+      body: formData,
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to upload photo');
+  }
+
+  const data = await response.json();
+  return data.data.photo;
 }
 
 // Emoji picker functionality

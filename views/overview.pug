@@ -49,15 +49,15 @@ block content
             .social-stats
               .reactions-summary
                 .reaction-icons
+                  // Dynamic emoji icons will be loaded here
                   span.reaction-icon(role="img" aria-label="like") 👍
                   span.reaction-icon(role="img" aria-label="love") ❤️
                   span.reaction-icon(role="img" aria-label="laugh") 😂
                   span.reaction-icon(role="img" aria-label="angry") 😡
 
-
-                span.reaction-count= `${Math.floor(Math.random() * 50) + 10}`
-              .comment-count
-                span= `${Math.floor(Math.random() * 20) + 5} comments`
+                span.reaction-count(data-tour-id=tour.id) 0
+              .comment-count(data-tour-id=tour.id)
+                span 0 comments
             
             .social-actions
               .action-buttons
