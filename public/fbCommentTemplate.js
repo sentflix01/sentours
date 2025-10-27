@@ -600,7 +600,7 @@ const emojis = [
   '💕',
 ];
 
-// Track which emoji pickers are visible
+// Track which emoji pickers are visible - now independent per tour
 const visibleEmojiPickers = new Set();
 
 function toggleEmojiPicker(tourId) {
@@ -627,7 +627,12 @@ function toggleEmojiPicker(tourId) {
   });
 
   if (!isVisible) {
-    // Show emoji picker
+    // Show emoji picker - positioned relative to the comment input wrapper
+    const commentWrapper = picker.closest('.comment-input-wrapper');
+    if (commentWrapper) {
+      commentWrapper.style.position = 'relative';
+    }
+
     picker.innerHTML = `
       <div class="emoji-picker-header">
         <span class="emoji-picker-title">Choose an emoji</span>

@@ -225,7 +225,75 @@
   margin: 0;
 }
 
-/* Emoji Picker Styles */
+/* Comment Input Styles */
+.comment-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 20px;
+  padding: 8px 12px;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+}
+
+.comment-input-wrapper:focus-within {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.comment-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  color: #495057;
+  padding: 4px 8px;
+}
+
+.comment-input::placeholder {
+  color: #6c757d;
+}
+
+.comment-input-icons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+}
+
+.comment-action-btn {
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.comment-action-btn:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.comment-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.comment-action-btn:disabled:hover {
+  background: none;
+  color: #6c757d;
+}
+
+/* Emoji Picker Styles - Now positioned relative to each tour */
 .emoji-picker-container {
   position: absolute;
   background: white;
@@ -235,6 +303,8 @@
   z-index: 1000;
   max-width: 300px;
   margin-top: 5px;
+  left: 0;
+  right: 0;
 }
 
 .emoji-picker-header {

@@ -82,7 +82,7 @@ block content
                   img.user-avatar(src=`/img/users/${user.photo || 'default.jpg'}` alt=`Photo of ${user.name}`)
                   .comment-input-wrapper
                     input.comment-input(type="text" placeholder="Write a comment..." data-tour-id=tour.id)
-                    .comment-actions
+                    .comment-input-icons
                       button.comment-action-btn.emoji-btn(title="Add emoji" data-tour-id=tour.id)
                         svg(width="16" height="16" viewBox="0 0 24 24" fill="currentColor")
                           path(d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z")
@@ -93,7 +93,7 @@ block content
                   img.user-avatar(src=`/img/users/default.jpg` alt="Default user photo")
                   .comment-input-wrapper
                     input.comment-input(type="text" placeholder="Log in to write a comment..." data-tour-id=tour.id disabled)
-                    .comment-actions
+                    .comment-input-icons
                       button.comment-action-btn.emoji-btn(title="Log in to add emoji" data-tour-id=tour.id disabled)
                         svg(width="16" height="16" viewBox="0 0 24 24" fill="currentColor")
                           path(d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z")
@@ -104,7 +104,7 @@ block content
                 // Hidden file input (available for all users, but only functional for logged-in users)
                 input(id=`comment-photo-${tour.id}`, type="file", accept="image/*", style="display:none", onchange=`previewCommentPhoto(event, '${tour.id}')`)
                 
-                // Emoji Picker Container (hidden by default)
+                // Emoji Picker Container (hidden by default) - Now inside each tour's comment section
                 div(id=`emoji-picker-container-${tour.id}`, class="emoji-picker-container", style="display:none;")
                 
                 // Image preview area
