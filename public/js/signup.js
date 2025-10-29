@@ -14,24 +14,17 @@ export const signup = async (name, email, password, passwordConfirm) => {
     if (res.data.status === 'success') {
       showAlert('success', 'Signed up successfully! Welcome to Natours!');
       // Clear the form
-      document.getElementById('name').value = '';
-      document.getElementById('email').value = '';
-      document.getElementById('password').value = '';
-      document.getElementById('passwordConfirm').value = '';
+      // document.getElementById('name').value = '';
+      // document.getElementById('email').value = '';
+      // document.getElementById('password').value = '';
+      // document.getElementById('passwordConfirm').value = '';
 
       // Redirect after a short delay
       window.setTimeout(() => {
         window.location.assign('/');
-      }, 2000);
+      }, 1500);
     }
   } catch (err) {
-    console.error('Signup error:', err);
-    if (err.response && err.response.data && err.response.data.message) {
-      showAlert('error', err.response.data.message);
-    } else if (err.code === 'ECONNABORTED') {
-      showAlert('error', 'Request timeout. Please try again.');
-    } else {
-      showAlert('error', 'Something went wrong! Please try again.');
-    }
+    showAlert('error', err.response.data.message);
   }
 };

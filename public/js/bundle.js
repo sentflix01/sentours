@@ -12875,29 +12875,22 @@ var signup = exports.signup = /*#__PURE__*/function () {
           if (res.data.status === 'success') {
             (0, _alerts.showAlert)('success', 'Signed up successfully! Welcome to Natours!');
             // Clear the form
-            document.getElementById('name').value = '';
-            document.getElementById('email').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('passwordConfirm').value = '';
+            // document.getElementById('name').value = '';
+            // document.getElementById('email').value = '';
+            // document.getElementById('password').value = '';
+            // document.getElementById('passwordConfirm').value = '';
 
             // Redirect after a short delay
             window.setTimeout(function () {
               window.location.assign('/');
-            }, 2000);
+            }, 1500);
           }
           _context.n = 3;
           break;
         case 2:
           _context.p = 2;
           _t = _context.v;
-          console.error('Signup error:', _t);
-          if (_t.response && _t.response.data && _t.response.data.message) {
-            (0, _alerts.showAlert)('error', _t.response.data.message);
-          } else if (_t.code === 'ECONNABORTED') {
-            (0, _alerts.showAlert)('error', 'Request timeout. Please try again.');
-          } else {
-            (0, _alerts.showAlert)('error', 'Something went wrong! Please try again.');
-          }
+          (0, _alerts.showAlert)('error', _t.response.data.message);
         case 3:
           return _context.a(2);
       }
@@ -13312,7 +13305,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53953" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55930" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
