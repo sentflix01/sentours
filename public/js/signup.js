@@ -22,7 +22,7 @@ export const signup = async (name, email, password, passwordConfirm) => {
       // Redirect after a short delay
       window.setTimeout(() => {
         window.location.assign('/');
-      }, 1500);
+      }, 2000);
     }
   } catch (err) {
     showAlert('error', err.response.data.message);

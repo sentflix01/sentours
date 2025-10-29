@@ -12883,7 +12883,7 @@ var signup = exports.signup = /*#__PURE__*/function () {
             // Redirect after a short delay
             window.setTimeout(function () {
               window.location.assign('/');
-            }, 1500);
+            }, 2000);
           }
           _context.n = 3;
           break;
