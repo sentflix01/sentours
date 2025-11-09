@@ -295,7 +295,9 @@
 
 /* Emoji Picker Styles - Now positioned relative to each tour */
 .emoji-picker-container {
-  position: absolute;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 10px;
   background: white;
   border: 1px solid #e9ecef;
   border-radius: 8px;

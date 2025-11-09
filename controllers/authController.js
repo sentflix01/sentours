@@ -37,30 +37,79 @@ const createSendToken = (user, statusCode, req, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  console.log('Signup request received:', { name: req.body.name, email: req.body.email });
-  
+  const { email } = req.body;
+
+  // 1) Check if user already exists
+  const existingUser = await User.findOne({ email: email.toLowerCase() });
+
+  if (existingUser && existingUser.emailVerified)
+    return next(new AppError('Email already exists — please login', 400));
+
+  // 2) Create new user
   const newUser = await User.create({
     name: req.body.name,
-    email: req.body.email,
+    email: req.body.email.toLowerCase(),
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
+    emailVerified: false,
   });
-  
-  console.log('User created successfully:', newUser.email);
-  
-  const url = `${req.protocol}://${req.get('host')}/me`;
-  console.log('Welcome email URL:', url);
-
+  // 3) Generate email verification token
+  const verificationToken = newUser.createEmailVerifyToken();
+  await newUser.save({ validateBeforeSave: false });
+  // 4) Send email verification email
+  const verifyURL = `${req.protocol}://${req.get('host')}/api/v1/users/verifyEmail/${verificationToken}`;
+  const welcomeURL = `${req.protocol}://${req.get('host')}/me`;
   try {
-    await new Email(newUser, url).sendWelcome();
-    console.log('Welcome email sent successfully');
-  } catch (emailError) {
-    console.error('Email sending failed:', emailError);
-    // Don't fail the signup if email fails
+    // Verification email sent!
+    await new Email(newUser, verifyURL).sendVerificationEmail();
+    //  Welcome email sent!
+    await new Email(newUser, welcomeURL).sendWelcome();
+  } catch (error) {
+    console.error('Email verification email sending failed:', error);
+
+    // Delete unverified user
+    await newUser.deleteOne();
+    return next(new AppError('Failed to send email verification email', 500)); // delete the user if the email verification email sending failed
+    // because the user is not verified, we need to delete the user from the database
+    // and we need to return an error to the user
   }
 
+  console.log('Email verification email sent successfully');
+  // 5) Log user in immediately after signup (optional)
   createSendToken(newUser, 201, req, res);
   console.log('Signup completed successfully');
+});
+
+exports.verifyEmail = catchAsync(async (req, res, next) => {
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  const user = await User.findOne({
+    emailVerificationToken: hashedToken,
+    emailVerificationExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return next(new AppError('Invalid or expired verification token.', 400));
+  }
+
+  user.emailVerified = true;
+  user.emailVerificationToken = undefined;
+  user.emailVerificationExpires = undefined;
+  await user.save({ validateBeforeSave: false });
+
+  // Auto-login after verification
+  const token = signToken(user._id);
+  res.cookie('jwt', token, {
+    expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+    httpOnly: true,
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
+  });
+
+  console.log('Email verified — redirecting...');
+  return res.redirect('/'); // You can change this to /home or dashboard
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -108,13 +157,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
   // 2) Verification token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  // let decoded;
-  // try {
-  //   decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  // } catch (err) {
-  //   // Pass JWT errors to the global error handler
-  //   return next(err);
-  // }
   // 3) check if user still exists
   // console.log('Decoded user ID:', decoded.id);
   const currentUser = await User.findById(decoded.id);

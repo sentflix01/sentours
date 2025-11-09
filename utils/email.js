@@ -12,34 +12,9 @@ module.exports = class Email {
     this.from = `Sintayehu Mulugeta <${process.env.EMAIL_FROM}>`;
   }
 
-  // newTransport() {
-  //   if (process.env.NODE_ENV === 'production') {
-  //     //Brevo
-  //     return nodemailer.createTransport({
-  //       service: 'Brevo',
-  //       // host: process.env.BREVO_HOST,
-  //       // port: Number(process.env.BREVO_PORT),
-  //       auth: {
-  //         user: process.env.BREVO_USER,
-  //         pass: process.env.BREVO_PASS,
-  //       },
-  //       secure: false,
-  //     });
-  //   }
-
-  //   return nodemailer.createTransport({
-  //     host: process.env.EMAIL_HOST,
-  //     port: Number(process.env.EMAIL_PORT),
-  //     auth: {
-  //       user: process.env.EMAIL_USERNAME,
-  //       pass: process.env.EMAIL_PASSWORD,
-  //     },
-  //     secure: false, // Mailtrap does not use SSL by default
-  //   });
-  // }
   newTransport() {
     if (process.env.NODE_ENV === 'production') {
-      //Brevo
+      //Brevo SMTP
       return nodemailer.createTransport({
         service: 'Brevo',
         auth: {
@@ -52,7 +27,7 @@ module.exports = class Email {
         socketTimeout: 10000, // 10 seconds
       });
     }
-
+    //Mailtrap or Gmail SMTP
     const transport = nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: Number(process.env.EMAIL_PORT),
@@ -60,36 +35,11 @@ module.exports = class Email {
         user: process.env.EMAIL_USERNAME,
         pass: process.env.EMAIL_PASSWORD,
       },
-      secure: false, // Mailtrap does not use SSL by default
-      connectionTimeout: 10000, // 10 seconds
-      greetingTimeout: 5000, // 5 seconds
-      socketTimeout: 10000, // 10 seconds
+      secure: false, // Mailtrap does not use SSL(Secure Layer) by default
     });
-
     return transport;
   }
 
-  // // send the actual email
-  // async send(template, subject) {
-  //   // 1) Render HTML based on a pug template
-  //   const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
-  //     firstName: this.firstName,
-  //     url: this.url,
-  //     subject,
-  //   });
-
-  //   // 2) Define email options
-  //   const mailOptions = {
-  //     from: this.from,
-  //     to: this.to,
-  //     subject,
-  //     html,
-  //     text: htmlToText.convert(html),
-  //   };
-  //   // 3) create a transport and send email
-  //   await this.newTransport().sendMail(mailOptions);
-  // }
-  // send the actual email
   async send(template, subject) {
     console.log('Sending email to:', this.to);
     console.log('From:', this.from);
@@ -115,14 +65,14 @@ module.exports = class Email {
 
     // 3) create a transport and send email with timeout
     const transport = this.newTransport();
-    
+
     // Wrap sendMail with a timeout
     const sendWithTimeout = (mailOptions, timeout = 15000) => {
       return Promise.race([
         transport.sendMail(mailOptions),
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Email sending timeout')), timeout)
-        )
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Email sending timeout')), timeout),
+        ),
       ]);
     };
 
@@ -134,12 +84,15 @@ module.exports = class Email {
       throw error;
     }
   }
+  async sendVerificationEmail() {
+    await this.send('verifyEmail', 'Please verify your email');
+  }
   async sendWelcome() {
     await this.send('welcome', 'Welcome to the Natours Familly!');
   }
   async sendPasswordReset() {
     await this.send(
-      'PasswordReset',
+      'passwordReset',
       'Your Password reset token (valid for only 10 minutes)',
     );
   }
