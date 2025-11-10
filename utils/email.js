@@ -16,12 +16,16 @@ module.exports = class Email {
     if (process.env.NODE_ENV === 'production') {
       //Brevo SMTP
       return nodemailer.createTransport({
-        service: 'Brevo',
+        host: 'smtp-relay.brevo.com',
+        port: 587, // TLS(Transport Layer Security) port
+        secure: false,
         auth: {
           user: process.env.BREVO_USER,
           pass: process.env.BREVO_PASS,
         },
-        secure: false,
+        tls: {
+          rejectUnauthorized: false, // avoids certificate errors on Render
+        },
         connectionTimeout: 10000, // 10 seconds
         greetingTimeout: 5000, // 5 seconds
         socketTimeout: 10000, // 10 seconds
@@ -41,10 +45,6 @@ module.exports = class Email {
   }
 
   async send(template, subject) {
-    console.log('Sending email to:', this.to);
-    console.log('From:', this.from);
-    console.log('Template:', template);
-
     // 1) Render HTML based on a pug template
     const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
       firstName: this.firstName,
@@ -61,8 +61,6 @@ module.exports = class Email {
       text: htmlToText.convert(html),
     };
 
-    console.log('Mail options:', mailOptions);
-
     // 3) create a transport and send email with timeout
     const transport = this.newTransport();
 
@@ -78,9 +76,7 @@ module.exports = class Email {
 
     try {
       const result = await sendWithTimeout(mailOptions);
-      console.log('Email sent successfully:', result);
     } catch (error) {
-      console.error('Email sending failed:', error);
       throw error;
     }
   }
