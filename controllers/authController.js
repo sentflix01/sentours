@@ -10,7 +10,6 @@ const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET || 'your-secret-key', {
     expiresIn: process.env.JWT_EXPIRES_IN || '90d',
     // jwt.sign({ id }, process.env.JWT_SECRET, { the JWT_SECRET is a secret key for signing the token and the secret key length must be 256 bits or 32 bytes. This is a security best practice.
-    //   expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
 const createSendToken = (user, statusCode, req, res) => {
@@ -56,27 +55,48 @@ exports.signup = catchAsync(async (req, res, next) => {
   // 3) Generate email verification token
   const verificationToken = newUser.createEmailVerifyToken();
   await newUser.save({ validateBeforeSave: false });
-  // 4) Send email verification email
-  const verifyURL = `${req.protocol}://${req.get('host')}/api/v1/users/verifyEmail/${verificationToken}`;
-  const welcomeURL = `${req.protocol}://${req.get('host')}/me`;
+  // 4) Send email verification email (CRITICAL - must succeed)
+  const verifyURL = `${req.protocol}://${req.get('host')}/verifyEmail/${verificationToken}`;
   try {
-    // Verification email sent!
     await new Email(newUser, verifyURL).sendVerificationEmail();
-    //  Welcome email sent!
-    await new Email(newUser, welcomeURL).sendWelcome();
+    console.log('Email verification email sent successfully');
   } catch (error) {
     console.error('Email verification email sending failed:', error);
-
-    // Delete unverified user
+    // Delete unverified user if verification email fails
     await newUser.deleteOne();
-    return next(new AppError('Failed to send email verification email', 500)); // delete the user if the email verification email sending failed
-    // because the user is not verified, we need to delete the user from the database
-    // and we need to return an error to the user
+    return next(
+      new AppError(
+        'Failed to send email verification email. Please try again later.',
+        500,
+      ),
+    );
   }
 
-  console.log('Email verification email sent successfully');
-  // 5) Log user in immediately after signup (optional)
-  createSendToken(newUser, 201, req, res);
+  // 5) Send welcome email (NON-CRITICAL - log error but don't fail signup)
+  const welcomeURL = `${req.protocol}://${req.get('host')}/me`;
+  try {
+    await new Email(newUser, welcomeURL).sendWelcome();
+    console.log('Welcome email sent successfully');
+  } catch (error) {
+    // Log error but don't fail signup - verification email is more important
+    console.error(
+      'Welcome email sending failed (non-critical):',
+      error.message,
+    );
+  }
+
+  // 6) Return success response (don't log user in - they must verify email first)
+  res.status(201).json({
+    status: 'success',
+    message:
+      'Account created successfully! Please check your email to verify your account before logging in.',
+    data: {
+      user: {
+        name: newUser.name,
+        email: newUser.email,
+      },
+    },
+  });
   console.log('Signup completed successfully');
 });
 
@@ -85,31 +105,87 @@ exports.verifyEmail = catchAsync(async (req, res, next) => {
     .createHash('sha256')
     .update(req.params.token)
     .digest('hex');
+  const autoLogin = req.query.autoLogin === 'true'; // enable via link param
+
+  // Debug logging
+  console.log(
+    'Verification attempt - Token received:',
+    req.params.token.substring(0, 10) + '...',
+  );
+  console.log(
+    'Verification attempt - Hashed token:',
+    hashedToken.substring(0, 20) + '...',
+  );
 
   const user = await User.findOne({
     emailVerificationToken: hashedToken,
-    emailVerificationExpires: { $gt: Date.now() },
+    emailVerificationTokenExpires: { $gt: Date.now() },
   });
 
+  // If user not found or expired
   if (!user) {
-    return next(new AppError('Invalid or expired verification token.', 400));
+    // Check if token exists but expired
+    const expiredUser = await User.findOne({
+      emailVerificationToken: hashedToken,
+    });
+
+    if (expiredUser) {
+      console.log('Token found but expired for user:', expiredUser.email);
+      return res.status(400).render('error', {
+        title: 'Token Expired',
+        msg: 'This email verification link has expired. Please request a new verification email or contact support if you need assistance.',
+      });
+    }
+
+    // Check if user exists but email is already verified
+    const usersWithToken = await User.find({
+      emailVerificationToken: { $exists: true, $ne: null },
+    }).select('email emailVerified emailVerificationTokenExpires');
+
+    console.log('No user found with this token. Checking database...');
+    console.log('Users with verification tokens:', usersWithToken.length);
+
+    // Render friendly error page (not JSON)
+    return res.status(400).render('error', {
+      title: 'Invalid or Expired Token',
+      msg: 'This email verification link is invalid or has expired. Please request a new verification email or contact support if the issue persists.',
+    });
   }
 
+  console.log('User found for verification:', user.email);
+  console.log(
+    'Token expires at:',
+    new Date(user.emailVerificationTokenExpires),
+  );
+  console.log('Current time:', new Date());
+  // Mark email as verified
   user.emailVerified = true;
   user.emailVerificationToken = undefined;
-  user.emailVerificationExpires = undefined;
+  user.emailVerificationTokenExpires = undefined;
   await user.save({ validateBeforeSave: false });
 
-  // Auto-login after verification
-  const token = signToken(user._id);
-  res.cookie('jwt', token, {
-    expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-    httpOnly: true,
-    secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
-  });
+  // Determine where to redirect/render based on environment
+  const appUrl =
+    process.env.APP_URL || `http://localhost:${process.env.PORT || 3000}`;
 
-  console.log('Email verified — redirecting...');
-  return res.redirect('/'); // You can change this to /home or dashboard
+  // If auto-login enabled, set cookie and redirect
+  if (autoLogin) {
+    const token = signToken(user._id);
+    res.cookie('jwt', token, {
+      httpOnly: true,
+      secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
+    });
+    // Redirect with query string for possible UX handling
+    return res.redirect(`${appUrl}/?verified=true`);
+  }
+
+  // Otherwise, render a friendly confirmation page
+  return res.status(200).render('success', {
+    title: 'Email Verified!',
+    msg: 'Your email has been successfully verified! You can now log in to your account.',
+    showLogin: true,
+    showHome: true,
+  });
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -126,7 +202,17 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect email or password', 401));
   }
 
-  //3) if everything ok, send token to client
+  //3) check if email is verified
+  if (!user.emailVerified) {
+    return next(
+      new AppError(
+        'Please verify your email before logging in. Check your inbox for the verification link.',
+        401,
+      ),
+    );
+  }
+
+  //4) if everything ok, send token to client
   createSendToken(user, 200, req, res);
 });
 

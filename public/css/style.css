@@ -140,6 +140,17 @@ body {
   font-size: 3.5rem;
 }
 
+.heading-secondary--success {
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(#7dd56f),
+    to(#28b487)
+  );
+  background-image: linear-gradient(to right, #7dd56f, #28b487);
+}
+
 .heading-primary,
 .heading-tertirary {
   color: #fff;
@@ -1229,6 +1240,108 @@ body {
   box-shadow: 0 2.5rem 8rem 2rem rgba(0, 0, 0, 0.06);
   padding: 5rem 7rem;
   border-radius: 5px;
+}
+
+.success-content {
+  text-align: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.success__icon {
+  font-size: 6rem;
+  margin-bottom: 2rem;
+  -webkit-animation: scale-in 0.5s ease-out;
+  animation: scale-in 0.5s ease-out;
+}
+
+@-webkit-keyframes scale-in {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.success__message {
+  font-size: 1.6rem;
+  color: #777;
+  line-height: 1.6;
+  margin-bottom: 4rem;
+  max-width: 45rem;
+}
+
+.success__actions {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
+  margin-top: 2rem;
+}
+
+.success__actions .btn {
+  min-width: 15rem;
+  text-align: center;
+  text-decoration: none;
+}
+
+@media only screen and (max-width: 37.5em) {
+  .success__actions {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .success__actions .btn {
+    width: 100%;
+  }
+
+  .login-form {
+    padding: 4rem 3rem;
+  }
 }
 
 .form__input {

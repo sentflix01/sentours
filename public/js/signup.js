@@ -14,13 +14,17 @@ export const signup = async (name, email, password, passwordConfirm) => {
     if (res.data.status === 'success') {
       showAlert(
         'success',
-        'Signup successful! Check your email to verify your account.',
+        res.data.message ||
+          'Signup successful! Please check your email to verify your account before logging in.',
       );
+      setTimeout(() => {
+        window.location.assign('/login');
+      }, 3000);
     }
   } catch (err) {
     showAlert(
       'error',
-      err.response?.data?.message || 'Signup failed. Try again!',
+      err.response?.data?.message || 'Signup failed. Please try again!',
     );
   }
 };
