@@ -1,29 +1,26 @@
-const pug = require('pug'); // for rendering HTML templates
-const htmlToText = require('html-to-text'); // for converting HTML to text
-let BrevoAPI;
-
-if (process.env.NODE_ENV === 'production') {
-  BrevoAPI = require('@getbrevo/brevo'); // for sending emails with Brevo
-}
+const pug = require('pug');
+const htmlToText = require('html-to-text');
 
 module.exports = class Email {
   constructor(user, url) {
     this.to = user.email;
     this.firstName = user.name.split(' ')[0];
     this.url = url;
-    this.from = `${process.env.EMAIL_FROM}`;
+    this.from = process.env.EMAIL_FROM; // Must be verified on Brevo for prod
   }
 
   async send(template, subject) {
+    // 1️⃣ Generate HTML email
     const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
       firstName: this.firstName,
       url: this.url,
       subject,
     });
 
+    // 2️⃣ Production → Brevo API
     if (process.env.NODE_ENV === 'production') {
-      // ✅ Brevo API (no SMTP)
       try {
+        const BrevoAPI = require('@getbrevo/brevo');
         const apiInstance = new BrevoAPI.TransactionalEmailsApi();
         apiInstance.setApiKey(
           BrevoAPI.TransactionalEmailsApiApiKeys.apiKey,
@@ -37,12 +34,18 @@ module.exports = class Email {
           htmlContent: html,
           textContent: htmlToText.convert(html),
         });
+
+        console.log(`✅ Email sent to ${this.to} (Production/Brevo API)`);
+        return;
       } catch (err) {
-        console.error('Brevo API Email Error:', err);
-        throw err;
+        console.error('❌ Brevo email sending failed:', err.message);
+        // do not crash server — fallback to no email
+        return;
       }
-    } else {
-      // ✅ Dev SMTP (Mailtrap or Gmail)
+    }
+
+    // 3️⃣ Development → SMTP (Mailtrap / Gmail)
+    try {
       const nodemailer = require('nodemailer');
       const transport = nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
@@ -60,15 +63,21 @@ module.exports = class Email {
         html,
         text: htmlToText.convert(html),
       });
+
+      console.log(`📩 Email sent to ${this.to} (Development/SMTP)`);
+    } catch (err) {
+      console.error('❌ Dev SMTP send failed:', err.message);
     }
   }
 
   async sendVerificationEmail() {
     await this.send('verifyEmail', 'Please verify your email');
   }
+
   async sendWelcome() {
     await this.send('welcome', 'Welcome to the Natours Family!');
   }
+
   async sendPasswordReset() {
     await this.send(
       'passwordReset',
