@@ -1,5 +1,7 @@
 const pug = require('pug');
 const htmlToText = require('html-to-text');
+const BrevoAPI = require('@getbrevo/brevo');
+const nodemailer = require('nodemailer');
 
 module.exports = class Email {
   constructor(user, url) {
@@ -35,10 +37,10 @@ module.exports = class Email {
           textContent: htmlToText.convert(html),
         });
 
-        console.log(`✅ Email sent to ${this.to} (Production/Brevo API)`);
+        console.log(`Email sent to ${this.to} (Production/Brevo API)`);
         return;
       } catch (err) {
-        console.error('❌ Brevo email sending failed:', err.message);
+        console.error('Brevo email sending failed:', err.message);
         // do not crash server — fallback to no email
         return;
       }
@@ -66,7 +68,7 @@ module.exports = class Email {
 
       console.log(`📩 Email sent to ${this.to} (Development/SMTP)`);
     } catch (err) {
-      console.error('❌ Dev SMTP send failed:', err.message);
+      console.error('Dev SMTP send failed:', err);
     }
   }
 
