@@ -38,14 +38,13 @@ app.set('views', path.join(__dirname, 'views'));
 // ----------------------
 
 // IMPLEMENT CORS
-app.use(cors());
-// Access-Control-Allow-origin *
-// api.natours.com,  front-end natours.com
-// app.use(
-//   cors({
-//     origin: 'https://www.natours.com',
-//   }),
-// );
+app.use(
+  cors({
+    origin: 'https://sentours.onrender.com',
+    credentials: true,
+  }),
+);
+
 app.options('*', cors());
 //app.options('/api/v1/tours/:id', cors())
 // Security HTTP headers (CSP disabled for smooth dev with Leaflet/Stripe)
