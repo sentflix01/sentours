@@ -107,16 +107,6 @@ exports.verifyEmail = catchAsync(async (req, res, next) => {
     .digest('hex');
   const autoLogin = req.query.autoLogin === 'true'; // enable via link param
 
-  // Debug logging
-  console.log(
-    'Verification attempt - Token received:',
-    req.params.token.substring(0, 10) + '...',
-  );
-  console.log(
-    'Verification attempt - Hashed token:',
-    hashedToken.substring(0, 20) + '...',
-  );
-
   const user = await User.findOne({
     emailVerificationToken: hashedToken,
     emailVerificationTokenExpires: { $gt: Date.now() },
@@ -130,7 +120,6 @@ exports.verifyEmail = catchAsync(async (req, res, next) => {
     });
 
     if (expiredUser) {
-      console.log('Token found but expired for user:', expiredUser.email);
       return res.status(400).render('error', {
         title: 'Token Expired',
         msg: 'This email verification link has expired. Please request a new verification email or contact support if you need assistance.',
@@ -142,50 +131,30 @@ exports.verifyEmail = catchAsync(async (req, res, next) => {
       emailVerificationToken: { $exists: true, $ne: null },
     }).select('email emailVerified emailVerificationTokenExpires');
 
-    console.log('No user found with this token. Checking database...');
-    console.log('Users with verification tokens:', usersWithToken.length);
-
     // Render friendly error page (not JSON)
     return res.status(400).render('error', {
       title: 'Invalid or Expired Token',
-      msg: 'This email verification link is invalid or has expired. Please request a new verification email or contact support if the issue persists.',
+      msg: 'This email verification link is invalid or has expired. Please request a new verification email or contact support if you need assistance.',
     });
   }
 
-  console.log('User found for verification:', user.email);
-  console.log(
-    'Token expires at:',
-    new Date(user.emailVerificationTokenExpires),
-  );
-  console.log('Current time:', new Date());
   // Mark email as verified
   user.emailVerified = true;
   user.emailVerificationToken = undefined;
   user.emailVerificationTokenExpires = undefined;
   await user.save({ validateBeforeSave: false });
 
-  // Determine where to redirect/render based on environment
-  const appUrl =
-    process.env.APP_URL || `http://localhost:${process.env.PORT || 3000}`;
-
   // If auto-login enabled, set cookie and redirect
   if (autoLogin) {
-    const token = signToken(user._id);
-    res.cookie('jwt', token, {
-      httpOnly: true,
-      secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
+    createSendToken(user, 200, req, res);
+  } else {
+    return res.status(200).render('success', {
+      title: 'Email Verified!',
+      msg: 'Your email has been successfully verified! You can now log in to your account.',
+      showLogin: true,
+      showHome: true,
     });
-    // Redirect with query string for possible UX handling
-    return res.redirect(`${appUrl}/?verified=true`);
   }
-
-  // Otherwise, render a friendly confirmation page
-  return res.status(200).render('success', {
-    title: 'Email Verified!',
-    msg: 'Your email has been successfully verified! You can now log in to your account.',
-    showLogin: true,
-    showHome: true,
-  });
 });
 
 exports.login = catchAsync(async (req, res, next) => {
