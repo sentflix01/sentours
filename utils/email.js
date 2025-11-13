@@ -10,22 +10,30 @@ module.exports = class Email {
     this.from = `Sentours Team <${process.env.EMAIL_FROM}>`;
   }
 
-  // Create Brevo SMTP transport
+  // -----------------------------
+  // 1️⃣ Create Brevo SMTP transport
+  // -----------------------------
   createTransport() {
     return nodemailer.createTransport({
-      host: 'smtp-relay.brevo.com', // Brevo SMTP server
-      port: 587, // or 465 if using SSL
+      host: 'smtp-relay.brevo.com',
+      port: Number(process.env.EMAIL_PORT) || 587,
+      secure: Number(process.env.EMAIL_PORT) === 465, // true for 465, false for 587
       auth: {
         user: process.env.BREVO_USER,
         pass: process.env.BREVO_PASS,
       },
+      tls: {
+        rejectUnauthorized: false, // fixes some cloud deployment TLS issues
+      },
     });
   }
 
-  // Core send function for all templates
+  // -----------------------------
+  // 2️⃣ Core send function
+  // -----------------------------
   async send(template, subject) {
     try {
-      // 1️⃣ Generate HTML using Pug template
+      // 2a) Render HTML from Pug template
       const html = pug.renderFile(
         `${__dirname}/../views/email/${template}.pug`,
         {
@@ -35,29 +43,30 @@ module.exports = class Email {
         },
       );
 
-      // 2️⃣ Convert HTML to plain text
+      // 2b) Convert HTML to plain text
       const text = htmlToText.convert(html);
 
-      // 3️⃣ Send the email using Brevo transport
+      // 2c) Send email
       const transporter = this.createTransport();
-
       await transporter.sendMail({
         from: this.from,
         to: this.to,
         subject,
         html,
         text,
+        socketTimeout: 5 * 60 * 1000, // 5 minutes timeout for slow connections
       });
 
-      console.log(`Email sent successfully to ${this.to}`);
+      console.log(`✅ Email sent successfully to ${this.to}`);
     } catch (err) {
-      console.error('Email sending failed:', err.message);
-      throw err;
-      return;
+      console.error('❌ Email sending failed:', err.message);
+      throw err; // propagate error so controller can handle unverified users
     }
   }
 
-  // 🎯 Predefined email templates
+  // -----------------------------
+  // 3️⃣ Predefined email templates
+  // -----------------------------
   async sendVerificationEmail() {
     await this.send('verifyEmail', 'Please verify your email address');
   }
