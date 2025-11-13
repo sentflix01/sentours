@@ -56,7 +56,10 @@ exports.signup = catchAsync(async (req, res, next) => {
   const verificationToken = newUser.createEmailVerifyToken();
   await newUser.save({ validateBeforeSave: false });
   // 4) Send email verification email (CRITICAL - must succeed)
-  const verifyURL = `${req.protocol}://${req.get('host')}/verifyEmail/${verificationToken}`;
+  const protocol =
+    process.env.NODE_ENV === 'production' ? 'https' : req.protocol;
+  const verifyURL = `${protocol}://${req.get('host')}/verifyEmail/${verificationToken}`;
+
   try {
     await new Email(newUser, verifyURL).sendVerificationEmail();
     console.log('Email verification email sent successfully');

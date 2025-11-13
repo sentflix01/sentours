@@ -38,12 +38,7 @@ app.set('views', path.join(__dirname, 'views'));
 // ----------------------
 
 // IMPLEMENT CORS
-app.use(
-  cors({
-    origin: 'https://sentours.onrender.com',
-    credentials: true,
-  }),
-);
+app.use(cors());
 
 app.options('*', cors());
 //app.options('/api/v1/tours/:id', cors())
