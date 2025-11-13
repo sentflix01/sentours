@@ -99,14 +99,14 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-/*const change to export*/ exports.createUser = (req, res) => {
+exports.createUser = (req, res) => {
   res.status(500).json({
     status: 'error',
     message: 'This route is not defined  Please use /signup instead',
   });
 };
-/*const change to export*/ exports.getUser = factory.getOne(User);
-/*const change to export*/ exports.getAllUsers = factory.getAll(User);
+exports.getUser = factory.getOne(User);
+exports.getAllUsers = factory.getAll(User);
 // Do not update password with this!
-/*const change to export*/ exports.updateUser = factory.updateOne(User);
-/*const change to export*/ exports.deleteUser = factory.deleteOne(User);
+exports.updateUser = factory.updateOne(User);
+exports.deleteUser = factory.deleteOne(User);
