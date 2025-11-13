@@ -38,7 +38,7 @@ app.set('views', path.join(__dirname, 'views'));
 // ----------------------
 
 // IMPLEMENT CORS
-app.use(cors());
+app.use(cors({ origin: '*', credentials: true }));
 
 app.options('*', cors());
 //app.options('/api/v1/tours/:id', cors())
