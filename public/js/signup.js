@@ -9,7 +9,7 @@ export const signup = async (name, email, password, passwordConfirm) => {
       url: 'https://sentours.onrender.com/api/v1/users/signup',
       withCredentials: true,
       data: { name, email, password, passwordConfirm },
-      timeout: 60000,
+      timeout: 300000,
     });
 
     if (res.data.status === 'success') {
