@@ -118,14 +118,32 @@ userSchema.methods.correctResetToken = function () {
 };
 
 userSchema.methods.createEmailVerifyToken = function () {
+  // If user already has a valid (unexpired) token, reuse it instead of creating a new one
+  if (
+    this.emailVerificationToken &&
+    this.emailVerificationTokenExpires &&
+    this.emailVerificationTokenExpires > Date.now()
+  ) {
+    return null; // Prevent multiple valid tokens
+  }
+
+  // Clear any old token first
+  this.emailVerificationToken = undefined;
+  this.emailVerificationTokenExpires = undefined;
+
+  // Create new random token
   const verifyToken = crypto.randomBytes(32).toString('hex');
+
+  // Hash and store token in DB for security
   this.emailVerificationToken = crypto
-    // Hash the token using SHA-256 algorithm to ensure it's secure
     .createHash('sha256')
     .update(verifyToken)
     .digest('hex');
-  this.emailVerificationTokenExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
-  return verifyToken; // Send unencrypted token to email
+
+  // Set expiry to 10 minutes from now
+  this.emailVerificationTokenExpires = Date.now() + 10 * 60 * 1000;
+
+  return verifyToken; // Return the raw token to email the user
 };
 
 const User = mongoose.model('User', userSchema);

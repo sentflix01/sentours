@@ -107,54 +107,74 @@ exports.verifyEmail = catchAsync(async (req, res, next) => {
     .digest('hex');
   const autoLogin = req.query.autoLogin === 'true'; // enable via link param
 
-  const user = await User.findOne({
+  // 1️ Find user with matching token and valid (not expired) expiry time
+  let user = await User.findOne({
     emailVerificationToken: hashedToken,
     emailVerificationTokenExpires: { $gt: Date.now() },
   });
 
-  // If user not found or expired
+  // 2️ If no user found, check for already verified user
   if (!user) {
-    // Check if token exists but expired
+    const previouslyVerified = await User.findOne({
+      emailVerificationToken: hashedToken,
+      emailVerified: true,
+    });
+
+    // If already verified → show success page
+    if (previouslyVerified) {
+      return res.status(200).render('success', {
+        title: 'Email Already Verified',
+        msg: 'Your email has already been verified. You can safely log in.',
+        showLogin: true,
+        showHome: true,
+      });
+    }
+
+    // If token exists but expired → show expiry page
     const expiredUser = await User.findOne({
       emailVerificationToken: hashedToken,
     });
 
     if (expiredUser) {
       return res.status(400).render('error', {
-        title: 'Token Expired',
-        msg: 'This email verification link has expired. Please request a new verification email or contact support if you need assistance.',
+        title: 'Verification Link Expired',
+        msg: 'This email verification link has expired. Please request a new verification email.',
       });
     }
 
-    // Check if user exists but email is already verified
-    const usersWithToken = await User.find({
-      emailVerificationToken: { $exists: true, $ne: null },
-    }).select('email emailVerified emailVerificationTokenExpires');
-
-    // Render friendly error page (not JSON)
+    // Invalid token
     return res.status(400).render('error', {
-      title: 'Invalid or Expired Token',
-      msg: 'This email verification link is invalid or has expired. Please request a new verification email or contact support if you need assistance.',
+      title: 'Invalid Verification Link',
+      msg: 'This email verification link is invalid or has expired.',
     });
   }
 
-  // Mark email as verified
-  user.emailVerified = true;
-  user.emailVerificationToken = undefined;
-  user.emailVerificationTokenExpires = undefined;
-  await user.save({ validateBeforeSave: false });
-
-  // If auto-login enabled, set cookie and redirect
-  if (autoLogin) {
-    createSendToken(user, 200, req, res);
-  } else {
+  // 3️⃣ If email already verified, just show success
+  if (user.emailVerified) {
     return res.status(200).render('success', {
-      title: 'Email Verified!',
-      msg: 'Your email has been successfully verified! You can now log in to your account.',
+      title: 'Email Already Verified',
+      msg: 'Your email is already verified. You can now log in.',
       showLogin: true,
       showHome: true,
     });
   }
+
+  // 4️ Mark email as verified but keep token until it naturally expires
+  user.emailVerified = true;
+  await user.save({ validateBeforeSave: false });
+
+  // 5️ If auto-login is requested, issue token and redirect
+  if (autoLogin) {
+    return createSendToken(user, 200, req, res);
+  }
+
+  // 6️ Otherwise, show normal success page
+  return res.status(200).render('success', {
+    title: 'Email Verified Successfully',
+    msg: 'Your email has been verified successfully! You can now log in.',
+    showLogin: true,
+    showHome: true,
+  });
 });
 
 exports.login = catchAsync(async (req, res, next) => {

@@ -49,9 +49,11 @@ module.exports = class Email {
         text,
       });
 
-      console.log(`📩 [BREVO] Email sent successfully to ${this.to}`);
+      console.log(`Email sent successfully to ${this.to}`);
     } catch (err) {
-      console.error('❌ [BREVO] Email send failed:', err.message);
+      console.error('Email sending failed:', err.message);
+      throw err;
+      return;
     }
   }
 
