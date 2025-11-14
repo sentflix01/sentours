@@ -1,12 +1,13 @@
 /* eslint-disable */
 import axios from 'axios';
 import { showAlert } from './alerts';
+import { getApiUrl } from './config';
 
 export const signup = async (name, email, password, passwordConfirm) => {
   try {
     const res = await axios({
       method: 'POST',
-      url: 'https://sentours.onrender.com/api/v1/users/signup',
+      url: getApiUrl('/api/v1/users/signup'),
       withCredentials: true,
       data: { name, email, password, passwordConfirm },
       timeout: 300000,
