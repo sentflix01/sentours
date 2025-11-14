@@ -3,7 +3,22 @@ import axios from 'axios';
 import { showAlert } from './alerts';
 import { getApiUrl } from './config';
 
-export const signup = async (name, email, password, passwordConfirm) => {
+export const signup = async (
+  name,
+  email,
+  password,
+  passwordConfirm,
+  button,
+) => {
+  // Store original button text
+  const originalText = button ? button.textContent : 'Sign Up';
+
+  // Update button text to show loading state
+  if (button) {
+    button.textContent = 'Signing up...';
+    button.disabled = true;
+  }
+
   try {
     const res = await axios({
       method: 'POST',
@@ -14,6 +29,9 @@ export const signup = async (name, email, password, passwordConfirm) => {
     });
 
     if (res.data.status === 'success') {
+      if (button) {
+        button.textContent = 'Success!';
+      }
       showAlert(
         'success',
         res.data.message ||
@@ -24,6 +42,11 @@ export const signup = async (name, email, password, passwordConfirm) => {
       }, 3000);
     }
   } catch (err) {
+    // Restore original button text on error
+    if (button) {
+      button.textContent = originalText;
+      button.disabled = false;
+    }
     showAlert(
       'error',
       err.response?.data?.message || 'Signup failed. Please try again!',

@@ -23,21 +23,25 @@ if (leaflet) {
 if (signupForm)
   signupForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    // Get the submit button
+    const submitBtn = signupForm.querySelector('button[type="submit"]');
     // value
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('passwordConfirm').value;
-    signup(name, email, password, passwordConfirm);
+    signup(name, email, password, passwordConfirm, submitBtn);
   });
 
 if (loginForm)
   loginForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    // Get the submit button
+    const submitBtn = loginForm.querySelector('button[type="submit"]');
     // value
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    login(email, password);
+    login(email, password, submitBtn);
   });
 
 if (logOutBtn) logOutBtn.addEventListener('click', logout);

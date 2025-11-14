@@ -2,7 +2,16 @@
 import axios from 'axios';
 import { showAlert } from './alerts';
 
-export const login = async (email, password) => {
+export const login = async (email, password, button) => {
+  // Store original button text
+  const originalText = button ? button.textContent : 'Login';
+
+  // Update button text to show loading state
+  if (button) {
+    button.textContent = 'Logging in...';
+    button.disabled = true;
+  }
+
   try {
     const res = await axios({
       method: 'POST',
@@ -14,12 +23,20 @@ export const login = async (email, password) => {
     });
 
     if (res.data.status === 'success') {
+      if (button) {
+        button.textContent = 'Success!';
+      }
       showAlert('success', 'Logged in successfully!');
       window.setTimeout(() => {
         location.assign('/');
       }, 1500);
     }
   } catch (err) {
+    // Restore original button text on error
+    if (button) {
+      button.textContent = originalText;
+      button.disabled = false;
+    }
     showAlert('error', err.response.data.message);
   }
 };
