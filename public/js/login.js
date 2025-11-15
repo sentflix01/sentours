@@ -1,6 +1,7 @@
 /* eslint-disable */
 import axios from 'axios';
 import { showAlert } from './alerts';
+import { getApiUrl } from './config';
 
 export const login = async (email, password, button) => {
   // Store original button text
@@ -8,14 +9,14 @@ export const login = async (email, password, button) => {
 
   // Update button text to show loading state
   if (button) {
-    button.textContent = 'Logging in...';
+    button.textContent = 'Log in...';
     button.disabled = true;
   }
 
   try {
     const res = await axios({
       method: 'POST',
-      url: '/api/v1/users/login',
+      url: getApiUrl('/api/v1/users/login'),
       data: {
         email,
         password,
